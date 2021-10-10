@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ghost.GameManagerTest" tests="17" skipped="0" failures="0" errors="0" timestamp="2020-11-22T12:13:42" hostname="Aashikas-MBP" time="0.024">
+  <properties/>
+  <testcase name="getCoordinatesForDebugWhimNotAlive()" classname="ghost.GameManagerTest" time="0.001"/>
+  <testcase name="getCoordinatesForDebugChaserNotAlive()" classname="ghost.GameManagerTest" time="0.001"/>
+  <testcase name="constructor()" classname="ghost.GameManagerTest" time="0.001"/>
+  <testcase name="checkGetFrightenedLength()" classname="ghost.GameManagerTest" time="0.001"/>
+  <testcase name="getCoordinatesForDebugIgnorantNotAlive()" classname="ghost.GameManagerTest" time="0.001"/>
+  <testcase name="getCoordinatesForDebugAmbusher()" classname="ghost.GameManagerTest" time="0.001"/>
+  <testcase name="getCoordinatesForDebugAmbusherAbsent()" classname="ghost.GameManagerTest" time="0.004"/>
+  <testcase name="checkTick2()" classname="ghost.GameManagerTest" time="0.001"/>
+  <testcase name="checkTick3()" classname="ghost.GameManagerTest" time="0.001"/>
+  <testcase name="getCoordinatesForDebugIgnorant()" classname="ghost.GameManagerTest" time="0.0"/>
+  <testcase name="checkTick()" classname="ghost.GameManagerTest" time="0.001"/>
+  <testcase name="getCoordinatesForDebugIgnorantAbsent()" classname="ghost.GameManagerTest" time="0.001"/>
+  <testcase name="getCoordinatesForDebugWhimAbsent()" classname="ghost.GameManagerTest" time="0.0"/>
+  <testcase name="getCoordinatesForDebugChaserAbsent()" classname="ghost.GameManagerTest" time="0.0"/>
+  <testcase name="getCoordinatesForDebugWhim()" classname="ghost.GameManagerTest" time="0.001"/>
+  <testcase name="getCoordinatesForDebugAmbushertNotAlive()" classname="ghost.GameManagerTest" time="0.002"/>
+  <testcase name="getCoordinatesForDebugChaser()" classname="ghost.GameManagerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,2655 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Ghost.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">waka</a> &gt; <a href="index.source.html" class="el_package">ghost</a> &gt; <span class="el_source">Ghost.java</span></div><h1>Ghost.java</h1><pre class="source lang-java linenums">package ghost;
+
+import processing.core.PApplet;
+import processing.core.PImage;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import java.io.*;
+import java.text.ParseException;
+import java.util.*;
+import java.lang.System.*;
+import java.lang.Math;
+
+
+/**
+ *  Represents ghost object in game.
+ */
+
+public class Ghost {
+
+// Variable to store the PImage of the ambusher ghost.
+private PImage ambusher;
+
+// Variable to store the PImage of the chaser ghost.
+private PImage chaser;
+
+// Variable to store the PImage of the ignorant ghost.
+private PImage ignorant;
+
+// Variable to store the PImage of the whim ghost.
+private PImage whim;
+
+// Variable to store the PImage of the frightened ghost.
+private PImage fright;
+
+// Variable to store the x-axis position, followed by y-axis position of the ambusher 
+// on map in the form of an array list.
+private ArrayList&lt;Long&gt; ghostsAmbusher;
+
+// Variable to store the x-axis position, followed by y-axis position of the chaser 
+// on map in the form of an array list.
+private ArrayList&lt;Long&gt; ghostsChaser;
+
+// Variable to store the x-axis position, followed by y-axis position of the ignorant 
+// on map in the form of an array list.
+private ArrayList&lt;Long&gt; ghostsIgnorant;
+
+// Variable to store the x-axis position, followed by y-axis position of the whim on 
+// map in the form of an array list.
+private ArrayList&lt;Long&gt; ghostsWhim;
+
+// Variable to store the x-axis position, followed by y-axis position of the ambusher 
+// when chasing the target.
+private ArrayList&lt;Long&gt; targetsAmbusher;
+
+// Variable to store the x-axis position, followed by y-axis position of the chaser 
+// when chasing the target.
+private ArrayList&lt;Long&gt; targetsChaser;
+
+// Variable to store the x-axis position, followed by y-axis position of the ignorant 
+// when chasing the target.
+private ArrayList&lt;Long&gt; targetsIgnorant;
+
+// Variable to store the x-axis position, followed by y-axis position of the whim 
+// when chasing the target .
+private ArrayList&lt;Long&gt; targetsWhim;
+
+// Variable to store the mode lengths of the ghost.
+private ArrayList&lt;Long&gt; modeLength;
+
+// Variable to store the time at which the frightened mode started, and ended.
+private ArrayList&lt;Long&gt; frightTimes;
+
+// Variable to store which round of mode lengths is the ghost on.
+private int roundNumber;
+
+// Variable to store the name of the  map text file.
+private String mapfile;
+
+// Variable to store the length of each round of mode lengths.
+private long length;
+
+// Variable to store the current time.
+private long time;
+
+// Variable to store the difference between the current time, and the time at which 
+// the game started.
+private long timeDifference;
+
+// Variable to store the speed of the ghost.
+private long speed;
+
+// Variable to store the length of frightened ghost mode.
+private long frightenedLength;
+
+// Variable to store the number of times the ghost has entered frightened mode.
+private long timesFrightened;
+
+// Variable to store the x-axis position of the target of ambusher.
+private long targetxAmbusher;
+
+// Variable to store the y-axis position of the target of ambusher.
+private long targetyAmbusher;
+
+// Variable to store the x-axis position of the target of chaser.
+private long targetxChaser;
+
+// Variable to store the y-axis position of the target of chaser.
+private long targetyChaser;
+
+// Variable to store the x-axis position of the target of ignorant.
+private long targetxIgnorant;
+
+// Variable to store the y-axis position of the target of ignorant.
+private long targetyIgnorant;
+
+// Variable to store the x-axis position of the target of whim.
+private long targetxWhim;
+
+// Variable to store the y-axis position of the target of whim.
+private long targetyWhim;
+
+// Variable to store the x-axis position, followed by y-axis position of down left 
+// grid blocks.
+private ArrayList&lt;Integer&gt; downL;
+
+// Variable to store the x-axis position, followed by y-axis position of down right 
+// grid blocks.
+private ArrayList&lt;Integer&gt; downR;
+
+// Variable to store the x-axis position, followed by y-axis position of up left 
+// grid blocks.
+private ArrayList&lt;Integer&gt; upL;
+
+// Variable to store the x-axis position, followed by y-axis position of up right 
+// grid blocks.
+private ArrayList&lt;Integer&gt; upR;
+
+// Variable to store the x-axis position, followed by y-axis position of horizontal 
+// grid blocks.
+private ArrayList&lt;Integer&gt; hor;
+
+// Variable to store the x-axis position, followed by y-axis position of vertical 
+// grid blocks.
+private ArrayList&lt;Integer&gt; ver;
+
+// Variable to store the list of moves the ambusher has taken.
+private ArrayList&lt;Integer&gt; movesListAmbusher;
+
+// Variable to store the list of moves the chaser has taken.
+private ArrayList&lt;Integer&gt; movesListChaser;
+
+// Variable to store the list of moves the ignorant has taken.
+private ArrayList&lt;Integer&gt; movesListIgnorant;
+
+// Variable to store the list of moves the whim has taken.
+private ArrayList&lt;Integer&gt; movesListWhim;
+
+// Variable to store if the ghost is in frightened mode or not.
+private boolean frightened;
+
+// Variable that stores whether the ambusher is alive or not.
+private boolean ambusherAlive;
+
+// Variable that stores whether the chaser is alive or not.
+private boolean chaserAlive;
+
+// Variable that stores whether the ignorant is alive or not.
+private boolean ignorantAlive;
+
+// Variable that stores whether the whim is alive or not.
+private boolean whimAlive;
+
+// Variable of type Config.
+private Config config;
+
+// Variable of type Waka.
+private Waka waka;
+
+
+
+/**
+ *  Constructs a new Ghost object.
+ * 
+ * @param ambusher PImage of ambusher ghost.
+ * @param ignorant PImage of ignorant ghost.
+ * @param chaser PImage of chaser ghost.
+ * @param whim PImage of whim ghost.
+ * @param waka Object of type Waka.
+ * @param fright PImage of ghost in frightened mode.
+ * @param config Object of type Config.
+ */
+
+// Constructor.
+public Ghost ( PImage ambusher,PImage ignorant, PImage chaser, PImage whim, Waka waka, 
+<span class="fc" id="L196">                    PImage fright, Config config) {</span>
+
+
+<span class="fc" id="L199">        this.ambusher = ambusher;</span>
+<span class="fc" id="L200">        this.ignorant = ignorant;</span>
+<span class="fc" id="L201">        this.whim = whim;</span>
+<span class="fc" id="L202">        this.chaser = chaser;</span>
+<span class="fc" id="L203">        this.waka = waka;</span>
+<span class="fc" id="L204">        this.fright = fright;</span>
+<span class="fc" id="L205">        this.config = config;</span>
+
+<span class="fc" id="L207">        this.hor = config.getHor ();</span>
+<span class="fc" id="L208">        this.ver = config.getVer ();</span>
+<span class="fc" id="L209">        this.downL = config.getDownL ();</span>
+<span class="fc" id="L210">        this.downR = config.getDownR ();</span>
+<span class="fc" id="L211">        this.upL = config.getUpL ();</span>
+<span class="fc" id="L212">        this.upR = config.getUpR ();</span>
+
+<span class="fc" id="L214">        this.movesListAmbusher = new ArrayList&lt;Integer&gt; ();</span>
+<span class="fc" id="L215">        this.movesListChaser = new ArrayList&lt;Integer&gt; ();</span>
+<span class="fc" id="L216">        this.movesListIgnorant = new ArrayList&lt;Integer&gt; ();</span>
+<span class="fc" id="L217">        this.movesListWhim = new ArrayList&lt;Integer&gt; ();</span>
+
+<span class="fc" id="L219">        this.ambusherAlive = true;</span>
+<span class="fc" id="L220">        this.chaserAlive = true;</span>
+<span class="fc" id="L221">        this.ignorantAlive = true;</span>
+<span class="fc" id="L222">        this.whimAlive = true;</span>
+
+<span class="fc" id="L224">        this.length = config.getDuration ();</span>
+
+<span class="fc" id="L226">        ghostsAmbusher = config.getGhostsAmbusher ();</span>
+<span class="fc" id="L227">        ghostsIgnorant = config.getGhostsIgnorant ();</span>
+<span class="fc" id="L228">        ghostsChaser = config.getGhostsChaser ();</span>
+<span class="fc" id="L229">        ghostsWhim = config.getGhostsWhim ();</span>
+<span class="fc" id="L230">        modeLength = config.getModeLength ();</span>
+<span class="fc" id="L231">        frightTimes = new ArrayList&lt;Long&gt; ();</span>
+<span class="fc" id="L232">        roundNumber = 0;</span>
+
+<span class="fc" id="L234">        frightened = false;</span>
+<span class="fc" id="L235">        timesFrightened = 0;</span>
+
+<span class="fc" id="L237">        targetxAmbusher = 0;</span>
+<span class="fc" id="L238">        targetyAmbusher = 0;</span>
+<span class="fc" id="L239">        targetxChaser = 0;</span>
+<span class="fc" id="L240">        targetyChaser = 0;</span>
+<span class="fc" id="L241">        targetxIgnorant = 0;</span>
+<span class="fc" id="L242">        targetyIgnorant = 0;</span>
+<span class="fc" id="L243">        targetxWhim = 0;</span>
+<span class="fc" id="L244">        targetyWhim = 0;</span>
+
+<span class="fc" id="L246">        this.frightenedLength = config.getFrightenedLength ();</span>
+<span class="fc" id="L247">        this.speed = config.getSpeed ();</span>
+
+<span class="fc" id="L249">        targetsAmbusher = new ArrayList&lt;Long&gt; (ghostsAmbusher);</span>
+<span class="fc" id="L250">        targetsIgnorant = new ArrayList&lt;Long&gt; (ghostsIgnorant);</span>
+<span class="fc" id="L251">        targetsChaser =new ArrayList&lt;Long&gt; (ghostsChaser);</span>
+<span class="fc" id="L252">        targetsWhim = new ArrayList&lt;Long&gt; (ghostsWhim);</span>
+
+<span class="fc" id="L254">}</span>
+
+
+/**
+ *  Returns the number of rounds of the mode lengths that the ghost has completed. 
+ *  That is it tells how many times the ghost has traversed through the whole mode 
+ *  lengths list switching between scatter, and chase mode accordingly.
+ * 
+ *  @return Mode length round number.
+ */
+
+// Getter method.
+public int getRoundNumber () {
+<span class="fc" id="L267">    return roundNumber;</span>
+}
+
+/**
+ *  Returns the list of times at which the frightened modes of the ghost started, 
+ *  and ended. 
+ *  The list would be empty if the ghost has not entered any frightened mode yet.
+ * 
+ *  @return List of frightened mode start, and end times.
+ */
+
+// Getter method.
+public ArrayList&lt;Long&gt; getFrightTimes () {
+<span class="fc" id="L280">    return frightTimes;</span>
+}
+
+
+/**
+ *  Returns true if the ghost is in frightened mode, else it returns false.
+ * 
+ *  @return Whether ghost is in frightened mode or not.
+ */
+
+// Getter method.
+public boolean getFrightened () {
+<span class="fc" id="L292">    return frightened;</span>
+}
+
+
+/**
+ *  Returns the x-axis target position of ambusher.
+ *  @return Target x-axis position.
+ */
+
+
+// Getter method.
+public long getTargetxAmbusher () {
+<span class="fc" id="L304">    return targetxAmbusher;</span>
+}
+
+/**
+ *  Returns the y-axis target position of ambusher.
+ *  @return Target y-axis position.
+ */
+
+// Getter method.
+public long getTargetyAmbusher () {
+<span class="fc" id="L314">    return targetyAmbusher;</span>
+}
+
+/**
+ *  Returns the x-axis target position of chaser.
+ *  @return Target x-axis position.
+ */
+
+// Getter method.
+public long getTargetxChaser () {
+<span class="fc" id="L324">    return targetxChaser;</span>
+}
+
+/**
+ *  Returns the y-axis target position of chaser.
+ *  @return Target y-axis position.
+ */
+
+// Getter method.
+public long getTargetyChaser () {
+<span class="fc" id="L334">    return targetyChaser;</span>
+}
+
+/**
+ *  Returns the x-axis target position of ignorant.
+ *  @return Target x-axis position.
+ */
+
+// Getter method.
+public long getTargetxIgnorant () {
+<span class="fc" id="L344">    return targetxIgnorant;</span>
+}
+
+/**
+ *  Returns the y-axis target position of ignorant.
+ *  @return Target y-axis position.
+ */
+
+// Getter method.
+public long getTargetyIgnorant () {
+<span class="fc" id="L354">    return targetyIgnorant;</span>
+}
+
+/**
+ *  Returns the x-axis target position of whim.
+ *  @return Target x-axis position.
+ */
+
+// Getter method.
+public long getTargetxWhim () {
+<span class="fc" id="L364">    return targetxWhim;</span>
+}
+
+/**
+ *  Returns the y-axis target position of whim.
+ *  @return Target y-axis position.
+ */
+
+// Getter method.
+public long getTargetyWhim () {
+<span class="fc" id="L374">    return targetyWhim;</span>
+}
+
+/**
+ *  Returns the x-axis position, followed by y-axis position of ambusher ghosts 
+ *  in the form of a list based on the target in either scatter or chase mode.
+ * 
+ *  @return Position of ambusher ghosts.
+ */
+
+// Getter method.
+public ArrayList&lt;Long&gt; getTargetsAmbusher () {
+<span class="fc" id="L386">        return targetsAmbusher;</span>
+}
+
+/**
+ *  Returns the x-axis position, followed by y-axis position of chaser ghosts 
+ *  in the form of a list based on the target in either scatter or chase mode.
+ * 
+ *  @return Position of chaser ghosts.
+ */
+
+// Getter method.
+public ArrayList&lt;Long&gt; getTargetsChaser () {
+<span class="fc" id="L398">    return targetsChaser;</span>
+}
+
+/**
+ *  Returns the x-axis position, followed by y-axis position of ignorant ghosts 
+ *  in the form of a list based on the target in either scatter or chase mode.
+ * 
+ *  @return Position of ignorant ghosts.
+ */
+
+// Getter method.
+public ArrayList&lt;Long&gt; getTargetsIgnorant () {
+<span class="fc" id="L410">    return targetsIgnorant;</span>
+}
+
+/**
+ *  Returns the x-axis position, followed by y-axis position of whim ghosts 
+ *  in the form of a list based on the target in either scatter or chase mode.
+ * 
+ *  @return Position of whim ghosts.
+ */
+
+// Getter method.
+public ArrayList&lt;Long&gt; getTargetsWhim () {
+<span class="fc" id="L422">    return targetsWhim;</span>
+}
+
+/**
+ *  Returns the length of frightened mode for the ghost.
+ *  @return Frightened mode length.
+ */
+
+// Getter method.
+public long getFrightenedLength () {
+<span class="fc" id="L432">    return frightenedLength;</span>
+}
+
+/**
+ *  Sets the parameter as the ambushers's alive status. 
+ *  If the parameter passed is true then it sets that ambusher is alive, 
+ *  else if parameter is false then it sets that the ambusher is not alive.
+ * 
+ *  @param alivee The status telling if ambusher is alive or not.
+ */
+
+// Setter method.
+public void setAmbusherAlive (Boolean alivee) {
+<span class="fc" id="L445">    this.ambusherAlive = alivee;</span>
+<span class="fc" id="L446">}</span>
+
+/**
+ *  Sets the parameter as the chaser's alive status. 
+ *  If the parameter passed is true then it sets that chaser is alive, 
+ *  else if parameter is false then it sets that the chaser is not alive.
+ * 
+ *  @param alivee The status telling if chaser is alive or not.
+ */
+
+// Setter method.
+public void setChaserAlive (Boolean alivee) {
+<span class="fc" id="L458">    this.chaserAlive = alivee;</span>
+<span class="fc" id="L459">}</span>
+
+/**
+ *  Sets the parameter as the ignorant's alive status. 
+ *  If the parameter passed is true then it sets that ignorant is alive, 
+ *  else if parameter is false then it sets that the ignorant is not alive.
+ * 
+ *  @param alivee The status telling if ignorant is alive or not.
+ */
+
+// Setter method.
+public void setIgnorantAlive (Boolean alivee) {
+<span class="fc" id="L471">    this.ignorantAlive = alivee;</span>
+<span class="fc" id="L472">}</span>
+
+/**
+ *  Sets the parameter as the whim's alive status. 
+ *  If the parameter passed is true then it sets that whim is alive, 
+ *  else if parameter is false then it sets that the whim is not alive.
+ * 
+ *  @param alivee The status telling if whim is alive or not.
+ */
+
+// Setter method.
+public void setWhimAlive (Boolean alivee) {
+<span class="fc" id="L484">    this.whimAlive = alivee;</span>
+<span class="fc" id="L485">}</span>
+
+/**
+ *  Sets the parameter as the list of times at which the frightened modes of 
+ *  the ghost started, and ended. 
+ * 
+ *  @param times List of frightened mode start, and end times.
+ */
+
+// Setter method.
+public void setFrightTimes (ArrayList&lt;Long&gt; times) {
+<span class="fc" id="L496">    this.frightTimes = times;</span>
+<span class="fc" id="L497">}</span>
+
+/**
+ *  Returns true if the ambusher is alive, else it returns false.
+ * 
+ *  @return Alive status of ambusher.
+ */
+
+// Method that tells whether ambusher is alive or not.
+public boolean isAmbusherAlive () {
+<span class="fc" id="L507">        return ambusherAlive;</span>
+}
+
+/**
+ *  Returns true if the ignorant is alive, else it returns false.
+ * 
+ *  @return Alive status of ignorant.
+ */
+
+// Method that tells whether ignorant is alive or not.
+public boolean isIgnorantAlive () {
+<span class="fc" id="L518">        return ignorantAlive;</span>
+}
+
+/**
+ *  Returns true if the chaser is alive, else it returns false.
+ * 
+ *  @return Alive status of chaser.
+ */
+
+// Method that tells whether chaser is alive or not.
+public boolean isChaserAlive () {
+<span class="fc" id="L529">        return chaserAlive;</span>
+}
+
+/**
+ *  Returns true if the whim is alive, else it returns false.
+ * 
+ *  @return Alive status of whim.
+ */
+
+// Method that tells whether whim is alive or not.
+public boolean isWhimAlive () {
+<span class="fc" id="L540">        return whimAlive;</span>
+}
+
+
+
+/**
+ *  Returns true if the ghost is in frightened mode, else it returns false;
+ * 
+ *  @param frightened Frightened status of ghost.
+ */
+
+// Setter method.
+public void setFrightened (boolean frightened) {
+<span class="fc" id="L553">        this.frightened = frightened;</span>
+<span class="fc" id="L554">}</span>
+
+/**
+ *  Method to add the frightened mode start, and end time to the fright times list.  
+ *  The parameter time is the frightened mode start time, or the time when a 
+ *  super fruit was eaten.
+ * 
+ *  @param time Frightened mode start time.
+ */
+
+
+public void addFrightTime (long time) {
+        
+        // If the length of fright times is 0, that is there are no fright times in
+        // the list, then we simply add the time passed as the parameter.
+<span class="fc bfc" id="L569" title="All 2 branches covered.">        if (frightTimes.size () == 0) {</span>
+                
+                // Adding the frightened mode start time passed in as a parameter.
+<span class="fc" id="L572">                frightTimes.add (time);</span>
+
+                // Adding the frightened mode end time which is equal to frightened mode 
+                // start time + frightened mode length.
+<span class="fc" id="L576">                frightTimes.add (time + frightenedLength);</span>
+        
+        } else {
+                
+<span class="fc" id="L580">                int length = frightTimes.size ();</span>
+                
+                // If the frightened start time is greater than the last frightened 
+                // end time, then we add the values to the list as done above.
+<span class="fc bfc" id="L584" title="All 2 branches covered.">                if (time &gt; frightTimes.get (length - 1) ) {</span>
+
+                        // Adding the frightened mode start time passed in as a 
+                        // parameter.
+<span class="fc" id="L588">                        frightTimes.add (time);</span>
+
+                        // Adding the frightened mode end time which is equal to 
+                        // frightened mode start time + frightened mode length.
+<span class="fc" id="L592">                        frightTimes.add (time + frightenedLength);</span>
+                
+                } else {
+                        
+                        // If time is graeter than the last frightened mode start time, 
+                        // but is less than the frightened mode end time then that denotes 
+                        // that the player ate another super fruit while the ghost was 
+                        // already in frightened mode.
+                        // In that case we just update the previous frightened mode end
+                        // time. We replace it with the new frightened mode end time.
+<span class="fc bfc" id="L602" title="All 2 branches covered.">                        if (time &gt; frightTimes.get (length - 2) ) {</span>
+                                
+                                // Replacing the frightened mode end time, with the new
+                                // end time.
+<span class="fc" id="L606">                                frightTimes.remove (length-1);</span>
+<span class="fc" id="L607">                                frightTimes.add (time + frightenedLength);</span>
+
+                        }
+                }
+        }
+
+<span class="fc" id="L613">}</span>
+
+/**
+ * Method that returns the amount of time spent in frightened mode already, 
+ * which needs to be adjusted when finding the current ghost mode.
+ * After frightened mode the ghost needs to continue from the previous mode, 
+ * the time elapsed in the frightened mode should not be taken into account when 
+ * calculating the next ghost mode.
+ * This gives the amount of time spent in frightened mode already.
+ * 
+ * @return Time spent in frightened mode.
+ */
+
+ 
+public long getTimeOffset () {
+<span class="fc" id="L628">        long timeOffset = 0;</span>
+        
+        // Adding the times spent in the frightened mode to time offset.
+<span class="fc bfc" id="L631" title="All 2 branches covered.">        for (int i = 0; i &lt; frightTimes.size () - 1; i += 2) {</span>
+<span class="fc" id="L632">                timeOffset += (frightTimes.get (i + 1) - frightTimes.get (i));</span>
+        }
+        
+        // Stores the current time.
+<span class="fc" id="L636">        long timeNow = System.currentTimeMillis() / 1000;</span>
+
+<span class="fc bfc" id="L638" title="All 2 branches covered.">        if (frightTimes.size () != 0) {</span>
+                
+                // If the current time is less than the last frightened mode end time, 
+                // then that means that the ghost is still in frightened mode.
+<span class="fc bfc" id="L642" title="All 2 branches covered.">                if (frightTimes.get (frightTimes.size () - 1 ) &gt; timeNow) {</span>
+
+                        // When ghost is still in frightened mode, we reduce the time 
+                        // between now and frightened mode end time from the time offset.
+                        // This is done beacuse that amount of time is yet to be elapsed.
+<span class="fc" id="L647">                        timeOffset -= frightTimes.get (frightTimes.size () - 1) - timeNow;</span>
+                }
+        }
+<span class="fc" id="L650">        return timeOffset;</span>
+}
+
+
+
+/**
+*  This method returns the mode lengths list in a cumulative format.
+* 
+*  @param modeLength List of mode lengths.
+*  @return Cumulative mode lengths.
+*/
+
+public ArrayList&lt;Long&gt; modeLengthAdjuster (ArrayList&lt;Long&gt; modeLength) {
+        
+        // Creating a new list to store cumulative mode lengths.
+<span class="fc" id="L665">        ArrayList&lt;Long&gt; modeLengths = new ArrayList&lt;Long&gt; ();</span>
+
+        // The first element needs to be 0.
+<span class="fc" id="L668">        modeLengths.add ( (long) 0);</span>
+<span class="fc" id="L669">        long sum = 0;</span>
+        
+        // Finding cumulative mode lengths.
+<span class="fc bfc" id="L672" title="All 2 branches covered.">        for (int i= 0; i &lt; modeLength.size (); i++) {</span>
+<span class="fc" id="L673">                sum += modeLength.get (i);</span>
+<span class="fc" id="L674">                modeLengths.add (sum);</span>
+        }
+        
+        // Returning cumulative mode lengths.
+<span class="fc" id="L678">        return modeLengths;</span>
+}
+
+/**
+ * This method selects and calls the required ghost mode based on the time.
+ * The parameter that is passed is the time at which the game started.
+ * 
+ * 
+ * @param startTime Time at which game started.
+ */
+
+
+public void move (long startTime) {
+        
+        // This variable stores the total time spent in frightened mode.
+<span class="fc" id="L693">        long timeOffset = getTimeOffset ();</span>
+
+        // We subtract the offset from the current time, because the time spent in 
+        // frightened mode is not counted when selecting the ghost mode- scatter, 
+        // or chase.
+<span class="fc" id="L698">        time = System.currentTimeMillis () / 1000 - timeOffset;</span>
+
+        // It tells how much time has passed since game started, or the game has been 
+        // running since how long.
+<span class="fc" id="L702">        timeDifference = time - startTime;</span>
+<span class="fc" id="L703">        int n = 0;</span>
+
+        while (true) {
+                
+                // Finding which round of mode lengths are we on. Here round means 
+                // how many times have we traversed the whole mode lengths list, 
+                // and have restarted.
+<span class="pc bpc" id="L710" title="1 of 4 branches missed.">                if (timeDifference &gt;= n * length &amp;&amp; timeDifference &lt; (n + 1) * length) {</span>
+<span class="fc" id="L711">                        roundNumber = n;</span>
+<span class="fc" id="L712">                        break;</span>
+                }
+<span class="fc" id="L714">                n += 1;</span>
+
+        }
+
+<span class="fc" id="L718">        ArrayList&lt;Long&gt; modeLengths = modeLengthAdjuster (modeLength);</span>
+        
+        // Finding the ghost mode, and calling those particular methods.
+<span class="fc bfc" id="L721" title="All 2 branches covered.">        for (int i = 0; i &lt; modeLengths.size () - 1; i++) {</span>
+            
+<span class="fc bfc" id="L723" title="All 2 branches covered.">                if (timeDifference &gt; (roundNumber) * length + modeLengths.get (i) </span>
+<span class="fc bfc" id="L724" title="All 2 branches covered.">                        &amp;&amp; timeDifference &lt;= (roundNumber) * length + modeLengths.get (i + 1)) {</span>
+                        
+<span class="fc bfc" id="L726" title="All 2 branches covered.">                        if (i % 2 == 0 ) {</span>
+
+                                // Caliing scatter method for all ghosts to find their 
+                                // target.
+<span class="fc" id="L730">                                scatterAmbusher ();</span>
+<span class="fc" id="L731">                                scatterChaser ();</span>
+<span class="fc" id="L732">                                scatterWhim ();</span>
+<span class="fc" id="L733">                                scatterIgnorant ();</span>
+
+                        } else {
+
+                                // Caliing chase method for all ghosts to find their target.
+<span class="fc" id="L738">                                chaseAmbusher ();</span>
+<span class="fc" id="L739">                                chaseIgnorant (targetsIgnorant);</span>
+<span class="fc" id="L740">                                chaseWhim ();</span>
+<span class="fc" id="L741">                                chaseChaser ();</span>
+
+                        } 
+
+                }
+
+<span class="fc bfc" id="L747" title="All 2 branches covered.">                if (timeDifference == 0) {</span>
+
+                        // Caliing scatter method for all ghosts to find their target.
+<span class="fc" id="L750">                        scatterAmbusher ();</span>
+<span class="fc" id="L751">                        scatterChaser ();</span>
+<span class="fc" id="L752">                        scatterWhim ();</span>
+<span class="fc" id="L753">                        scatterIgnorant ();</span>
+                }
+
+        }
+        
+        // If the ambusher is alive, then we call the isAlive() method to see if the 
+        // ambusher is colliding with waka or not.
+<span class="pc bpc" id="L760" title="1 of 2 branches missed.">        if (isAmbusherAlive() == true) {</span>
+<span class="fc" id="L761">            isAlive (targetsAmbusher, ambusher, &quot;ambusher&quot;);</span>
+        }
+        
+        // If the chaser is alive, then we call the isAlive() method to see if the 
+        // chaser is colliding with waka or not.
+<span class="pc bpc" id="L766" title="1 of 2 branches missed.">        if (isChaserAlive() == true) {</span>
+<span class="fc" id="L767">            isAlive (targetsChaser, chaser, &quot;chaser&quot;);</span>
+        }
+        
+        // If the ignorant is alive, then we call the isAlive() method to see if the 
+        // ignorant is colliding with waka or not.
+<span class="pc bpc" id="L772" title="1 of 2 branches missed.">        if (isIgnorantAlive() == true) {</span>
+<span class="fc" id="L773">            isAlive (targetsIgnorant, ignorant, &quot;ignorant&quot;);</span>
+        }
+        
+        // If the whim is alive, then we call the isAlive() method to see if the 
+        // whim is colliding with waka or not.
+<span class="pc bpc" id="L778" title="1 of 2 branches missed.">        if (isWhimAlive() == true) {</span>
+<span class="fc" id="L779">            isAlive (targetsWhim, whim, &quot;whim&quot;);</span>
+        }
+
+<span class="fc" id="L782">}</span>
+
+/**
+ * This method checks if the waka, and the ghost are colliding or not.
+ * If the ghost and waka are colliding, and ghost is in frightened mode then the ghost dies.
+ * If the collison happens and ghost is not in frightened mode, then waka or player dies.
+ * This method calls the functions to kill waka, and ghost when needed.
+ * 
+ * @param targets Position of ghost whose type is passed as parameter.
+ * @param spirit PImage of the ghost whose type is passed.
+ * @param type  String telling type of ghost.
+ */
+
+
+public void isAlive (ArrayList&lt;Long&gt; targets, PImage spirit, String type) {
+
+        // Variable that tells if waka is alive or not. Waka is alive if it does not 
+        // collides with the ghost.
+<span class="fc" id="L800">        Boolean alive = true;</span>
+
+<span class="fc bfc" id="L802" title="All 2 branches covered.">        for (int i = 0; i &lt; targets.size () - 1; i += 2) {</span>
+                
+                // Finding top, bottom, left, and right coordinates of the ghost, 
+                // and waka.
+<span class="fc" id="L806">                long ghostleft = targets.get (i);</span>
+<span class="fc" id="L807">                long ghosttop = targets.get (i+1);</span>
+<span class="fc" id="L808">                long ghostbottom = ghosttop + spirit.height;</span>
+<span class="fc" id="L809">                long ghostright = ghostleft + spirit.width;</span>
+<span class="fc" id="L810">                long wakaleft = waka.getX ();</span>
+<span class="fc" id="L811">                long wakatop = waka.getY ();</span>
+<span class="fc" id="L812">                long wakabottom = wakatop + 16;</span>
+<span class="fc" id="L813">                long wakaright = wakaleft + 16;</span>
+ 
+                // Checking different conditions to check if waka, and ghost are 
+                // colliding or not.
+<span class="fc bfc" id="L817" title="All 8 branches covered.">                if (ghostbottom &gt;= wakatop &amp;&amp; ghostbottom &lt;= wakabottom </span>
+                        &amp;&amp; ghostright &lt;= wakaright &amp;&amp; ghostright &gt;= wakaleft) {
+
+<span class="fc" id="L820">                            alive = false;</span>
+                }
+
+<span class="fc bfc" id="L823" title="All 8 branches covered.">                if (ghostbottom &gt;= wakatop &amp;&amp; ghostbottom &lt;= wakabottom </span>
+                        &amp;&amp; ghostleft &lt;= wakaright &amp;&amp; ghostleft &gt;= wakaleft) {
+
+<span class="fc" id="L826">                            alive = false;</span>
+                }
+
+<span class="pc bpc" id="L829" title="1 of 8 branches missed.">                if (ghosttop &gt;= wakatop &amp;&amp; ghosttop &lt;= wakabottom </span>
+                        &amp;&amp; ghostright &lt;= wakaright &amp;&amp; ghostright &gt;= wakaleft) {
+
+<span class="nc" id="L832">                            alive = false;</span>
+                }
+
+<span class="pc bpc" id="L835" title="5 of 8 branches missed.">                if (ghosttop &gt;= wakatop &amp;&amp; ghostbottom &lt;= wakabottom </span>
+                        &amp;&amp; ghostright &lt;= wakaright &amp;&amp; ghostleft &gt;= wakaleft) {
+                        
+<span class="nc" id="L838">                            alive = false;</span>
+                }
+
+<span class="fc bfc" id="L841" title="All 8 branches covered.">                if (wakatop &lt;= ghosttop &amp;&amp; ghosttop &lt;= wakabottom </span>
+                        &amp;&amp; ghostleft &lt;= wakaright &amp;&amp; ghostleft &gt;= wakaleft) {
+                            
+<span class="fc" id="L844">                            alive = false;</span>
+                }
+
+<span class="fc bfc" id="L847" title="All 8 branches covered.">                if (wakatop &gt;= ghosttop &amp;&amp; wakabottom &lt;= ghostbottom </span>
+                        &amp;&amp; wakaright &lt;= ghostright &amp;&amp; wakaleft &gt;= ghostleft) {
+                        
+<span class="fc" id="L850">                            alive = false;</span>
+                }
+
+        }
+        
+        // Waka can die only if it collides with a ghost that is not in frightened mode.
+<span class="pc bpc" id="L856" title="1 of 4 branches missed.">        if (alive == false &amp;&amp; frightened == false) {</span>
+
+<span class="fc" id="L858">                waka.die ();</span>
+
+                // After waka dies by colliding with a not frightened ghost, 
+                // all the ghosts that died, or dissapeared previously become alive 
+                // again.
+<span class="fc" id="L863">                this.ambusherAlive = true;</span>
+<span class="fc" id="L864">                this.chaserAlive = true;</span>
+<span class="fc" id="L865">                this.ignorantAlive = true;</span>
+<span class="fc" id="L866">                this.whimAlive = true;</span>
+                
+                // Ghosts restart from their starting position.
+<span class="fc" id="L869">                targetsAmbusher = new ArrayList&lt;Long&gt; (ghostsAmbusher);</span>
+<span class="fc" id="L870">                targetsIgnorant = new ArrayList&lt;Long&gt; (ghostsIgnorant);</span>
+<span class="fc" id="L871">                targetsWhim = new ArrayList&lt;Long&gt; (ghostsWhim);</span>
+<span class="fc" id="L872">                targetsChaser = new ArrayList&lt;Long&gt; (ghostsChaser);</span>
+        }
+        
+        // If waka, and ghost collide, and ghost is in frightened mode, then the 
+        // ghost dies.
+<span class="pc bpc" id="L877" title="1 of 4 branches missed.">        if (alive == false &amp;&amp; frightened == true) {</span>
+<span class="nc" id="L878">                dieGhost (type);</span>
+        }
+<span class="fc" id="L880">}</span>
+
+/**
+ * This method changes the status of the ghost referred to by the ghost type parameter 
+ * from alive to not alive. That is it kills the ghost. The ghost's alive status 
+ * becomes false.
+ * The parameter string &quot;ambusher&quot; refers to ambusher ghost, &quot;chaser&quot; refers to chaser 
+ * ghost, &quot;ignorant&quot; refers to ignorant ghost, and &quot;whim&quot; refers to whim ghost.
+ * 
+ * @param ghostType Type of ghost to be killed.
+ */
+
+
+public void dieGhost (String ghostType) { 
+
+<span class="fc bfc" id="L895" title="All 2 branches covered.">        if (ghostType == &quot;ambusher&quot;) {</span>
+<span class="fc" id="L896">                ambusherAlive = false;</span>
+        }
+
+<span class="fc bfc" id="L899" title="All 2 branches covered.">        if (ghostType == &quot;chaser&quot;) {</span>
+<span class="fc" id="L900">                chaserAlive = false;</span>
+        }
+
+<span class="fc bfc" id="L903" title="All 2 branches covered.">        if (ghostType == &quot;ignorant&quot;) {</span>
+<span class="fc" id="L904">                ignorantAlive = false;</span>
+        }
+
+<span class="fc bfc" id="L907" title="All 2 branches covered.">        if (ghostType == &quot;whim&quot;) {</span>
+<span class="fc" id="L908">                whimAlive = false;</span>
+        }
+<span class="fc" id="L910">}</span>
+
+/**
+ *  This method finds the target location for ambusher when in chase mode, and 
+ *  then calls the ghost move function to move the ghost accordingly.
+ */
+
+public void chaseAmbusher () {
+        
+        // Finding the current waka position.
+<span class="fc" id="L920">        long targetx = waka.getX (); </span>
+<span class="fc" id="L921">        long targety = waka.getY ();</span>
+
+        // Finding the direction in which waka is moving.
+<span class="fc" id="L924">        String direction = waka.getMovingDirection ();</span>
+        
+        // Finding the grid position which is four grid spaces ahead of waka based 
+        // on the direction of waka.
+<span class="fc bfc" id="L928" title="All 2 branches covered.">        if (direction == &quot;right&quot;) {</span>
+<span class="fc" id="L929">                targetx += 128;</span>
+
+<span class="pc bpc" id="L931" title="1 of 2 branches missed.">                if (targetx &gt; 432) {</span>
+<span class="nc" id="L932">                        targetx = 432;</span>
+                }
+
+<span class="fc bfc" id="L935" title="All 2 branches covered.">        } else if (direction == &quot;left&quot;) {</span>
+<span class="fc" id="L936">                targetx -= 128;</span>
+
+<span class="fc bfc" id="L938" title="All 2 branches covered.">                if (targetx &lt; 0) {</span>
+<span class="fc" id="L939">                        targetx = 0;</span>
+                }
+
+<span class="fc bfc" id="L942" title="All 2 branches covered.">        } else if (direction == &quot;up&quot;) {</span>
+<span class="fc" id="L943">                targety -= 128;</span>
+
+<span class="pc bpc" id="L945" title="1 of 2 branches missed.">                if (targety &lt; 0) {</span>
+<span class="nc" id="L946">                        targety = 0;</span>
+                }
+
+<span class="fc bfc" id="L949" title="All 2 branches covered.">        } else if (direction == &quot;down&quot;) {</span>
+<span class="fc" id="L950">                targety += 128;</span>
+
+<span class="pc bpc" id="L952" title="1 of 2 branches missed.">                if (targety &gt; 428) {</span>
+<span class="fc" id="L953">                        targety = 428;</span>
+                }
+
+        } else {
+        }
+        
+        // Updating the target position of ambusher based on the value calculated above.
+<span class="fc" id="L960">        targetxAmbusher = targetx;</span>
+<span class="fc" id="L961">        targetyAmbusher = targety;</span>
+
+        // Calling the ghost move function to move the ambusher according to its target position.
+<span class="fc" id="L964">        ghostMove (targetx, targety, targetsAmbusher, ambusher, movesListAmbusher);</span>
+
+<span class="fc" id="L966">}</span>
+
+/**
+ *  This method finds the target location for ambusher when in scatter mode, 
+ *  and then calls the ghost move function to move the ghost accordingly.
+ */
+
+public void scatterAmbusher () {
+        
+        // The target position for ambusher for scatter mode is top right corner.
+<span class="fc" id="L976">        long targetx = 410;</span>
+<span class="fc" id="L977">        long targety = 58;</span>
+
+<span class="fc" id="L979">        targetxAmbusher = targetx;</span>
+<span class="fc" id="L980">        targetyAmbusher = targety;</span>
+
+        // Calling the ghost move function to move the ambusher according to its target position.
+<span class="fc" id="L983">        ghostMove (targetx, targety, targetsAmbusher, ambusher, movesListAmbusher);</span>
+
+<span class="fc" id="L985">}</span>
+
+/**
+ *  This method finds the target location for chaser when in chase mode, and 
+ *  then calls the ghost move function to move the ghost accordingly.
+ */
+
+public void chaseChaser () {
+        
+        // Finding the current waka position.
+<span class="fc" id="L995">        long targetx = waka.getX ();</span>
+<span class="fc" id="L996">        long targety = waka.getY ();</span>
+        
+        // Target of chaser for chase mode is the current waka position.
+<span class="fc" id="L999">        targetxChaser = targetx;</span>
+<span class="fc" id="L1000">        targetyChaser = targety;</span>
+        
+        // Calling the ghost move function to move the chaser according to 
+        // its target position.
+<span class="fc" id="L1004">        ghostMove (targetx, targety, targetsChaser, chaser, movesListChaser);</span>
+<span class="fc" id="L1005">}</span>
+
+/**
+ *  This method finds the target location for chaser when in scatter mode, and 
+ *  then calls the ghost move function to move the ghost accordingly.
+ */
+
+public void scatterChaser () {
+        
+        // The target position for chaser for scatter mode is top left corner.
+<span class="fc" id="L1015">        long targetx = 10;</span>
+<span class="fc" id="L1016">        long targety = 59;</span>
+
+<span class="fc" id="L1018">        targetxChaser = targetx;</span>
+<span class="fc" id="L1019">        targetyChaser = targety;</span>
+        
+        // Calling the ghost move function to move the chaser according to its 
+        // target position.
+<span class="fc" id="L1023">        ghostMove (targetx, targety, targetsChaser, chaser, movesListChaser);</span>
+<span class="fc" id="L1024">}</span>
+
+/**
+ *  This method finds the target location for ignorant when in chase mode, and 
+ *  then calls the ghost move function to move the ghost accordingly.
+ * 
+ *  @param targets Array list of positions of ignorant ghost.
+ */
+
+public void chaseIgnorant (ArrayList&lt;Long&gt; targets) {
+        
+        // Finding the current position of waka.
+<span class="fc" id="L1036">        long wakax = waka.getX();</span>
+<span class="fc" id="L1037">        long wakay = waka.getY();</span>
+<span class="fc" id="L1038">        long currentx = 0;</span>
+<span class="fc" id="L1039">        long currenty = 0;</span>
+        
+        // Finding the current position of ignorant.
+<span class="fc bfc" id="L1042" title="All 2 branches covered.">        for (int i = 0; i &lt; targets.size () - 1; i += 2) {</span>
+<span class="fc" id="L1043">                currentx = targets.get (i);</span>
+<span class="fc" id="L1044">                currenty = targets.get (i + 1);</span>
+        }
+        
+        // Calculating the distance between waka, and ghost.
+<span class="fc" id="L1048">        long diffx = currentx - wakax;</span>
+<span class="fc" id="L1049">        long diffy = currenty - wakay;</span>
+<span class="fc" id="L1050">        long distance = (long) Math.sqrt (diffx * diffx + diffy * diffy);</span>
+        long targetx;
+        long targety;
+        
+        // If distance is less than 8 units, then target location is bottom left corner. 
+<span class="pc bpc" id="L1055" title="1 of 2 branches missed.">        if (distance &lt;= 8) {</span>
+<span class="nc" id="L1056">                targetx = 10;</span>
+<span class="nc" id="L1057">                targety = 59;</span>
+        }
+        else { 
+                // In this case the target location is the current position of waka.
+<span class="fc" id="L1061">                targetx = wakax;</span>
+<span class="fc" id="L1062">                targety = wakay;</span>
+        }
+
+<span class="fc" id="L1065">        targetxIgnorant = targetx;</span>
+<span class="fc" id="L1066">        targetyIgnorant = targety;</span>
+        
+        // Calling the ghost move function to move the ignorant according to its 
+        // target position.
+<span class="fc" id="L1070">        ghostMove (targetx, targety, targetsIgnorant, ignorant, movesListIgnorant);</span>
+<span class="fc" id="L1071">}</span>
+
+/**
+ *  This method finds the target location for ignorant when in scatter mode, and 
+ *  then calls the ghost move function to move the ghost accordingly.
+ */
+
+public void scatterIgnorant () {
+        
+        // The target position for chaser for scatter mode is bottom left corner.
+<span class="fc" id="L1081">        long targetx = 10;</span>
+<span class="fc" id="L1082">        long targety = 506;</span>
+
+<span class="fc" id="L1084">        targetxIgnorant = targetx;</span>
+<span class="fc" id="L1085">        targetyIgnorant = targety;</span>
+        
+        // Calling the ghost move function to move the ignorant according to its 
+        // target position.
+<span class="fc" id="L1089">        ghostMove (targetx, targety, targetsIgnorant, ignorant, movesListIgnorant);</span>
+<span class="fc" id="L1090">}</span>
+
+/**
+ *  This method finds the target location for whim when in chase mode, and then 
+ *  calls the ghost move function to move the ghost accordingly.
+ */
+
+public void chaseWhim () {
+
+<span class="pc bpc" id="L1099" title="1 of 2 branches missed.">        if (targetsChaser.size () != 0) {</span>
+                
+                // Finding the current waka position.
+<span class="fc" id="L1102">                long wakax = waka.getX ();</span>
+<span class="fc" id="L1103">                long wakay = waka.getY ();</span>
+
+<span class="fc" id="L1105">                long targetx = 0;</span>
+<span class="fc" id="L1106">                long targety = 0;</span>
+
+                // Finding the current chaser position.
+<span class="fc" id="L1109">                long chaserx = targetsChaser.get (0);</span>
+<span class="fc" id="L1110">                long chasery = targetsChaser.get (1);</span>
+<span class="fc" id="L1111">                String direction = waka.getMovingDirection ();</span>
+                
+                // Finding the position two grid spaces ahead of waka based on waka's 
+                // current direction.
+<span class="fc bfc" id="L1115" title="All 2 branches covered.">                if (direction == &quot;right&quot;) {</span>
+<span class="fc" id="L1116">                        wakax += 2;</span>
+
+<span class="pc bpc" id="L1118" title="1 of 2 branches missed.">                        if (wakax &gt; 432)</span>
+                        {
+<span class="nc" id="L1120">                                wakax = 432;</span>
+                        }
+
+<span class="fc bfc" id="L1123" title="All 2 branches covered.">                } else if (direction == &quot;left&quot;) {</span>
+<span class="fc" id="L1124">                        wakax -= 2;</span>
+
+<span class="pc bpc" id="L1126" title="1 of 2 branches missed.">                        if (wakax &lt; 0) {</span>
+<span class="nc" id="L1127">                                wakax = 0;</span>
+                        }
+
+<span class="fc bfc" id="L1130" title="All 2 branches covered.">                } else if (direction == &quot;up&quot;) {</span>
+<span class="fc" id="L1131">                        wakay -= 2;</span>
+
+<span class="pc bpc" id="L1133" title="1 of 2 branches missed.">                        if (wakay &lt; 0) {</span>
+<span class="nc" id="L1134">                                wakay = 0;</span>
+                        }
+
+<span class="fc bfc" id="L1137" title="All 2 branches covered.">                } else if (direction == &quot;down&quot;) {</span>
+<span class="fc" id="L1138">                        wakay += 2;</span>
+
+<span class="pc bpc" id="L1140" title="1 of 2 branches missed.">                        if (wakay &gt; 428) {</span>
+<span class="nc" id="L1141">                                wakay = 428;</span>
+                        }
+
+                } else {
+                }
+                
+                // Finding the target based on the position of chaser, and position 
+                // of grid two spaces ahead of waka in its direction of moving.
+
+<span class="pc bpc" id="L1150" title="1 of 4 branches missed.">                if ( wakax &lt; chaserx &amp;&amp; wakay == chasery ) {</span>
+             
+<span class="nc" id="L1152">                    targetx = chaserx - 2 * (chaserx - wakax);</span>
+
+<span class="nc bnc" id="L1154" title="All 2 branches missed.">                    if(targetx &lt; 0){</span>
+<span class="nc" id="L1155">                        targetx = 0;</span>
+                    }
+
+<span class="nc" id="L1158">                    targety = wakay;</span>
+
+<span class="pc bpc" id="L1160" title="1 of 4 branches missed.">                } else if ( wakax &lt; chaserx &amp;&amp; wakay &lt; chasery ) {</span>
+                
+<span class="nc" id="L1162">                    targetx = chaserx - 2 * (chaserx - wakax);</span>
+
+<span class="nc bnc" id="L1164" title="All 2 branches missed.">                    if(targetx &lt; 0){</span>
+<span class="nc" id="L1165">                        targetx = 0;</span>
+                    }
+
+<span class="nc" id="L1168">                    targety = chasery - 2 * (chasery - wakay);</span>
+
+<span class="nc bnc" id="L1170" title="All 2 branches missed.">                    if (targety &lt; 0){</span>
+<span class="nc" id="L1171">                        targety = 0;</span>
+                    }
+
+<span class="pc bpc" id="L1174" title="1 of 4 branches missed.">                } else if ( wakax &lt; chaserx &amp;&amp; wakay &gt; chasery ) {</span>
+            
+<span class="fc" id="L1176">                    targetx = chaserx - 2 * (chaserx - wakax);</span>
+
+<span class="pc bpc" id="L1178" title="1 of 2 branches missed.">                    if(targetx &lt; 0){</span>
+<span class="fc" id="L1179">                        targetx = 0;</span>
+                    }
+
+<span class="fc" id="L1182">                    targety = chasery + 2 * (wakay - chasery);</span>
+
+<span class="pc bpc" id="L1184" title="1 of 2 branches missed.">                    if (targety &gt; 576){</span>
+<span class="nc" id="L1185">                        targety = 576;</span>
+                    }
+
+<span class="pc bpc" id="L1188" title="3 of 4 branches missed.">                }   else if ( wakax == chaserx &amp;&amp; wakay &lt; chasery ) {</span>
+                
+<span class="nc" id="L1190">                    targetx = wakax;</span>
+
+<span class="nc" id="L1192">                    targety = chasery - 2 * (wakay - chasery);</span>
+
+<span class="nc bnc" id="L1194" title="All 2 branches missed.">                    if (targety &lt; 0){</span>
+<span class="nc" id="L1195">                        targety = 0;</span>
+                    }
+
+<span class="pc bpc" id="L1198" title="3 of 4 branches missed.">                }    else if ( wakax == chaserx &amp;&amp; wakay &gt; chasery ) {</span>
+                    
+<span class="nc" id="L1200">                    targetx = wakax;</span>
+
+<span class="nc" id="L1202">                    targety = chasery + 2 * (wakay - chasery);</span>
+
+<span class="nc bnc" id="L1204" title="All 2 branches missed.">                    if (targety &gt; 576){</span>
+<span class="nc" id="L1205">                        targety = 576;</span>
+                    }
+
+<span class="pc bpc" id="L1208" title="3 of 4 branches missed.">                }    else if ( wakax == chaserx &amp;&amp; wakay == chasery ) {</span>
+                
+<span class="nc" id="L1210">                    targetx = wakax;</span>
+<span class="nc" id="L1211">                    targety = wakay;</span>
+
+<span class="pc bpc" id="L1213" title="2 of 4 branches missed.">                }   else if ( wakax &gt; chaserx &amp;&amp; wakay == chasery ) {</span>
+              
+<span class="nc" id="L1215">                    targetx = chaserx + 2 * (chaserx - wakax);</span>
+
+<span class="nc bnc" id="L1217" title="All 2 branches missed.">                    if(targetx &gt; 448){</span>
+<span class="nc" id="L1218">                        targetx = 448;</span>
+                    }
+
+<span class="nc" id="L1221">                    targety = wakay;</span>
+
+<span class="pc bpc" id="L1223" title="2 of 4 branches missed.">                } else if ( wakax &gt; chaserx &amp;&amp; wakay &lt; chasery ) {</span>
+                  
+<span class="nc" id="L1225">                    targetx = chaserx + 2 * (chaserx - wakax);</span>
+
+<span class="nc bnc" id="L1227" title="All 2 branches missed.">                    if(targetx &gt; 448){</span>
+<span class="nc" id="L1228">                        targetx = 448;</span>
+                    }
+
+<span class="nc" id="L1231">                    targety = chasery - 2 * (chasery - wakay);</span>
+
+<span class="nc bnc" id="L1233" title="All 2 branches missed.">                    if (targety &lt; 0){</span>
+<span class="nc" id="L1234">                        targety = 0;</span>
+                    }
+
+<span class="pc bpc" id="L1237" title="2 of 4 branches missed.">                } else if ( wakax &gt; chaserx &amp;&amp; wakay &gt; chasery ) {</span>
+                
+<span class="fc" id="L1239">                    targetx = chaserx + 2 * (chaserx - wakax);</span>
+
+<span class="pc bpc" id="L1241" title="1 of 2 branches missed.">                    if(targetx &gt; 448){</span>
+<span class="nc" id="L1242">                        targetx = 448;</span>
+                    }
+
+<span class="fc" id="L1245">                    targety = chasery + 2 * (wakay - chasery);</span>
+
+<span class="pc bpc" id="L1247" title="1 of 2 branches missed.">                    if (targety &gt; 576){</span>
+<span class="nc" id="L1248">                        targety = 576;</span>
+                    } 
+
+                }            
+           
+<span class="fc" id="L1253">                targetxWhim = targetx;</span>
+<span class="fc" id="L1254">                targetyWhim = targety;</span>
+                
+                // Calling the ghost move function to move the whim according to its 
+                // target position.
+<span class="fc" id="L1258">                ghostMove (targetx, targety, targetsWhim, whim, movesListWhim);</span>
+        }
+<span class="fc" id="L1260">}</span>
+
+/**
+ *  This method finds the target location for whim when in scatter mode, and 
+ *  then calls the ghost move function to move the ghost accordingly.
+ */
+
+public void scatterWhim () {
+
+<span class="fc" id="L1269">        long targetx = 410;</span>
+<span class="fc" id="L1270">        long targety = 506;</span>
+
+<span class="fc" id="L1272">        targetxWhim = targetx;</span>
+<span class="fc" id="L1273">        targetyWhim = targety;</span>
+        
+        // Calling the ghost move function to move the whim according to its 
+        // target position.
+<span class="fc" id="L1277">        ghostMove (targetx, targety, targetsWhim, whim, movesListWhim);</span>
+<span class="fc" id="L1278">}</span>
+
+
+
+/**
+ *  This method is responsible for moving the ghost based on its target location. 
+ * 
+ *  @param targetx     x-axis target position.
+ *  @param targety     y-axis target position.
+ *  @param targets     List of ghost positions.
+ *  @param spirit      PImage of ghost which has to move.
+ *  @param movesList   List of moves made by ghost previously.
+ */
+
+public void ghostMove (long targetx, long targety, ArrayList&lt;Long&gt; targets, 
+                                PImage spirit, ArrayList&lt;Integer&gt; movesList) {
+
+
+<span class="fc bfc" id="L1296" title="All 2 branches covered.">        for (int i = 0; i &lt; targets.size () - 1; i += 2) {</span>
+                
+                // Stores the x, and y position of ghost.
+<span class="fc" id="L1299">                long ghostx = targets.get (i);</span>
+<span class="fc" id="L1300">                long ghosty = targets.get (i + 1);</span>
+                
+                // Direction array stores all the directions which are possible.
+<span class="fc" id="L1303">                String[] directions = {&quot;up&quot;, &quot;down&quot;, &quot;left&quot;, &quot;right&quot;};</span>
+
+                // Array to store whether it is possible for the ghost to move in 
+                // the direction corresponding to direction array or not.
+<span class="fc" id="L1307">                String[] possible = {&quot; &quot;, &quot; &quot;, &quot; &quot;, &quot; &quot;};</span>
+
+                Boolean result;
+
+<span class="fc bfc" id="L1311" title="All 2 branches covered.">                for (int j = 0; j &lt; 4; j++) {</span>
+                        
+<span class="fc bfc" id="L1313" title="All 2 branches covered.">                        if (j == 0) {</span>
+                                
+                                // If it is possible for the ghost to move upwards, 
+                                // then store yes in the possible array, else store no.
+<span class="fc" id="L1317">                                result = isCollidingUp (ghostx, ghosty - this.speed, </span>
+                                                            targets, spirit);
+
+<span class="fc bfc" id="L1320" title="All 2 branches covered.">                                if (result == true) {</span>
+<span class="fc" id="L1321">                                        possible [j] = &quot;no&quot;;</span>
+                                } else {
+<span class="fc" id="L1323">                                        possible [j] = &quot;yes&quot;;</span>
+                                }
+
+                        }
+<span class="fc bfc" id="L1327" title="All 2 branches covered.">                        if (j == 1) {</span>
+                                
+                                // If it is possible for the ghost to move downwards, 
+                                // then store yes in the possible array, else store no.
+<span class="fc" id="L1331">                                result = isCollidingDown (ghostx, ghosty + this.speed, </span>
+                                                            targets, spirit);
+
+<span class="fc bfc" id="L1334" title="All 2 branches covered.">                                if (result == true) {</span>
+<span class="fc" id="L1335">                                        possible [j] = &quot;no&quot;;</span>
+                                } else {
+<span class="fc" id="L1337">                                        possible [j] = &quot;yes&quot;;</span>
+                                }
+
+                        }
+<span class="fc bfc" id="L1341" title="All 2 branches covered.">                        if (j == 2) {</span>
+
+                                // If it is possible for the ghost to move left, 
+                                // then store yes in the possible array, else store no.
+<span class="fc" id="L1345">                                result = isCollidingLeft (ghostx - this.speed, ghosty, </span>
+                                                            targets, spirit);
+
+<span class="fc bfc" id="L1348" title="All 2 branches covered.">                                if (result == true) {</span>
+<span class="fc" id="L1349">                                        possible [j] = &quot;no&quot;;</span>
+                                } else {
+<span class="fc" id="L1351">                                        possible [j] = &quot;yes&quot;;</span>
+                                }
+
+                        }
+<span class="fc bfc" id="L1355" title="All 2 branches covered.">                        if (j == 3) {</span>
+
+                                // If it is possible for the ghost to move right, 
+                                // then store yes in the possible array, else store no.
+<span class="fc" id="L1359">                                result = isCollidingRight (ghostx + this.speed, ghosty, </span>
+                                                                targets, spirit);
+
+<span class="fc bfc" id="L1362" title="All 2 branches covered.">                                if (result == true) {</span>
+<span class="fc" id="L1363">                                        possible [j] = &quot;no&quot;;</span>
+                                } else { 
+<span class="fc" id="L1365">                                        possible [j] = &quot;yes&quot;;</span>
+                                }
+
+                        }
+                }
+                
+                // It stores the number of possible directions in which the ghost can move.
+<span class="fc" id="L1372">                int possibilities = 0;</span>
+
+<span class="fc" id="L1374">                int movePos = 9;</span>
+<span class="fc bfc" id="L1375" title="All 2 branches covered.">                for (int j = 0; j &lt; 4; j++) {</span>
+<span class="fc bfc" id="L1376" title="All 2 branches covered.">                        if (possible [j] == &quot;yes&quot;) {</span>
+<span class="fc" id="L1377">                                possibilities += 1;</span>
+                        }
+                }
+                
+                // Variable option1 stores the first priority direction of the ghost.
+<span class="fc" id="L1382">                String option1 = &quot;&quot;;</span>
+
+                // Variable option2 stores the first priority direction of the ghost.
+<span class="fc" id="L1385">                String option2 = &quot;&quot;;</span>
+
+                // Based on the ghost position, and its target location, we decide the 
+                // first, and second priority of the ghost.
+                
+<span class="fc bfc" id="L1390" title="All 4 branches covered.">                if (ghostx &gt; targetx &amp;&amp; ghosty &gt; targety) {</span>
+<span class="fc" id="L1391">                        long diffx = ghostx -  targetx;</span>
+<span class="fc" id="L1392">                        long diffy = ghosty -  targety;</span>
+
+<span class="fc bfc" id="L1394" title="All 2 branches covered.">                        if (diffx &gt; diffy){</span>
+<span class="fc" id="L1395">                                option1 = &quot;left&quot;;</span>
+<span class="fc" id="L1396">                                option2 = &quot;up&quot;;</span>
+                        } else{
+<span class="fc" id="L1398">                                option2 = &quot;left&quot;;</span>
+<span class="fc" id="L1399">                                option1 = &quot;up&quot;;</span>
+                        }
+                }
+
+<span class="fc bfc" id="L1403" title="All 4 branches covered.">                if (ghostx &gt; targetx &amp;&amp; ghosty &lt; targety) {</span>
+<span class="fc" id="L1404">                        long diffx = ghostx -  targetx;</span>
+<span class="fc" id="L1405">                        long diffy = targety -  ghosty;</span>
+
+<span class="fc bfc" id="L1407" title="All 2 branches covered.">                        if (diffx &gt; diffy) {</span>
+<span class="fc" id="L1408">                                option1 = &quot;left&quot;;</span>
+<span class="fc" id="L1409">                                option2 = &quot;down&quot;;</span>
+                        } else{
+<span class="fc" id="L1411">                                option2 = &quot;left&quot;;</span>
+<span class="fc" id="L1412">                                option1 = &quot;down&quot;;</span>
+                        }
+                }
+
+<span class="fc bfc" id="L1416" title="All 4 branches covered.">                if (ghostx &lt; targetx &amp;&amp; ghosty &lt; targety) {</span>
+<span class="fc" id="L1417">                        long diffx = targetx - ghostx;</span>
+<span class="fc" id="L1418">                        long diffy = targety -  ghosty;</span>
+
+<span class="fc bfc" id="L1420" title="All 2 branches covered.">                        if (diffx &gt; diffy) {</span>
+<span class="fc" id="L1421">                                option1 = &quot;right&quot;;</span>
+<span class="fc" id="L1422">                                option2 = &quot;down&quot;;</span>
+                        } else{
+<span class="fc" id="L1424">                                option2 = &quot;right&quot;;</span>
+<span class="fc" id="L1425">                                option1 = &quot;down&quot;;</span>
+                        }
+                }
+
+<span class="fc bfc" id="L1429" title="All 4 branches covered.">                if (ghostx &lt; targetx &amp;&amp; ghosty &gt; targety) {</span>
+<span class="fc" id="L1430">                        long diffx = targetx - ghostx;</span>
+<span class="fc" id="L1431">                        long diffy = ghosty -  targety;</span>
+
+<span class="fc bfc" id="L1433" title="All 2 branches covered.">                        if (diffx &gt; diffy) {</span>
+<span class="fc" id="L1434">                                option1 = &quot;right&quot;;</span>
+<span class="fc" id="L1435">                                option2 = &quot;up&quot;;</span>
+                        } else{
+<span class="fc" id="L1437">                                option2 = &quot;right&quot;;</span>
+<span class="fc" id="L1438">                                option1 = &quot;up&quot;;</span>
+                        }
+                }
+
+<span class="fc bfc" id="L1442" title="All 4 branches covered.">                if (ghostx &gt; targetx &amp;&amp; ghosty == targety) {</span>
+<span class="fc" id="L1443">                        option1 = &quot;right&quot;;</span>
+                }
+
+<span class="fc bfc" id="L1446" title="All 4 branches covered.">                if (ghostx == targetx &amp;&amp; ghosty &lt; targety) {</span>
+<span class="fc" id="L1447">                        option1 = &quot;up&quot;;</span>
+                }
+
+<span class="fc bfc" id="L1450" title="All 4 branches covered.">                if (ghostx &lt; targetx &amp;&amp; ghosty == targety) {</span>
+<span class="fc" id="L1451">                        option1 = &quot;left&quot;;</span>
+                }
+
+<span class="fc bfc" id="L1454" title="All 4 branches covered.">                if (ghostx == targetx &amp;&amp; ghosty &gt; targety) {</span>
+<span class="fc" id="L1455">                        option1 = &quot;down&quot;;</span>
+                }
+
+<span class="pc bpc" id="L1458" title="1 of 4 branches missed.">                if (ghostx == targetx &amp;&amp; ghostx == targety) {</span>
+<span class="nc" id="L1459">                        option1 = &quot;reached&quot;;</span>
+<span class="nc" id="L1460">                        option2 = &quot;reached&quot;;</span>
+                }
+
+                // Stores if we could find the first priority option or not.
+<span class="fc" id="L1464">                Boolean first = false;</span>
+
+                // Stores if we could find the second priority option or not.
+<span class="fc" id="L1467">                Boolean second = false;</span>
+                
+                // If ghost hasnt moved even once then we calculate the next possible move.
+<span class="fc bfc" id="L1470" title="All 2 branches covered.">                if (movesList.size () == 0) {</span>
+                        
+                        // Checking if the first option move is possible or not.
+<span class="fc bfc" id="L1473" title="All 2 branches covered.">                        for (int k = 0; k &lt; 4; k++) {</span>
+<span class="fc bfc" id="L1474" title="All 2 branches covered.">                                if (possible [k].equals (&quot;yes&quot;)) {</span>
+<span class="fc bfc" id="L1475" title="All 2 branches covered.">                                        if (directions [k].equals (option1) ) {</span>
+
+                                                // If first priority move is possible 
+                                                // then we change the move pos to the 
+                                                // index corresponding to that direction 
+                                                // in direction array.
+<span class="fc" id="L1481">                                                movePos = k;</span>
+<span class="fc" id="L1482">                                                first =  true;</span>
+<span class="fc" id="L1483">                                                break;</span>
+                                        }
+                                }
+                        }
+
+                        // Checking if the second option move is possible or not.
+<span class="fc bfc" id="L1489" title="All 2 branches covered.">                        for (int k = 0; k &lt; 4; k++) {</span>
+<span class="fc bfc" id="L1490" title="All 4 branches covered.">                                if (possible [k].equals (&quot;yes&quot;) &amp;&amp; first == false) {</span>
+<span class="fc bfc" id="L1491" title="All 2 branches covered.">                                        if (directions [k].equals (option2) ) {</span>
+
+                                                // If second priority move is possible then 
+                                                // we change the move pos to the index 
+                                                // corresponding to that direction in 
+                                                // direction array.
+<span class="fc" id="L1497">                                                movePos = k;</span>
+<span class="fc" id="L1498">                                                second = true;</span>
+<span class="fc" id="L1499">                                                break;</span>
+                                        }
+                                }
+                        }
+
+                        // Finding any possible move for the ghost, if both first, 
+                        // and second priorities are not possible.
+<span class="pc bpc" id="L1506" title="1 of 4 branches missed.">                        if (first == false &amp;&amp; second == false) {</span>
+
+<span class="nc bnc" id="L1508" title="All 2 branches missed.">                                for (int k = 0; k &lt; 4; k++) {</span>
+<span class="nc bnc" id="L1509" title="All 2 branches missed.">                                        if (possible [k].equals (&quot;yes&quot;) ) {</span>
+<span class="nc" id="L1510">                                                movePos = k;</span>
+<span class="nc" id="L1511">                                                break;</span>
+
+                                        }
+                                }
+                        }
+                        
+                        // Adding the move pos to the list of moves.
+<span class="fc" id="L1518">                        movesList.add (movePos);</span>
+                }
+
+                // If the ghost has already moved a several times, we only change direction
+                // at an intersection.
+<span class="pc bpc" id="L1523" title="1 of 2 branches missed.">                else if (movesList.size () != 0) { </span>
+
+                        // Stores the last move made by waka.
+<span class="fc" id="L1526">                        int lastMove = movesList.get (movesList.size () - 1);</span>
+
+                        // If the number of possibilities for the ghost is one, then 
+                        // ghost moves in that direction.
+<span class="fc bfc" id="L1530" title="All 2 branches covered.">                        if (possibilities == 1) {</span>
+<span class="pc bpc" id="L1531" title="1 of 2 branches missed.">                                for (int k = 0; k &lt; 4; k++) {</span>
+<span class="fc bfc" id="L1532" title="All 2 branches covered.">                                        if (possible [k].equals (&quot;yes&quot;) ) {</span>
+<span class="fc" id="L1533">                                                movePos = k;</span>
+<span class="fc" id="L1534">                                                break;</span>
+                                        }
+                                }
+                        }
+
+<span class="fc bfc" id="L1539" title="All 2 branches covered.">                        if (possibilities == 2) {</span>
+
+<span class="fc bfc" id="L1541" title="All 2 branches covered.">                                if (possible [lastMove].equals (&quot;yes&quot;) ) {</span>
+
+                                        // If the number of possibilities is two, and 
+                                        // the last move made by ghost is possible, 
+                                        // then the ghost would keep on moving in that 
+                                        // direction.
+<span class="fc" id="L1547">                                        movePos = lastMove;</span>
+                                } else {
+
+                                        // If the last made move is not possible, then 
+                                        // the ghost changes its direction to the other 
+                                        // possible move.
+<span class="pc bpc" id="L1553" title="1 of 2 branches missed.">                                        for (int k = 0; k &lt; 4; k++) {</span>
+
+<span class="pc bpc" id="L1555" title="1 of 4 branches missed.">                                                if (possible [k].equals (&quot;yes&quot;) </span>
+                                                        &amp;&amp; k != movePos) {
+<span class="fc" id="L1557">                                                            movePos = k;</span>
+<span class="fc" id="L1558">                                                            break;</span>
+                                                }
+                                        }
+                                }
+                        }
+
+                        // If the number of possibilities is greater than 2, that is 
+                        // ghost is at an intersection, we change ghosts direction.
+<span class="fc bfc" id="L1566" title="All 4 branches covered.">                        if (possibilities &gt; 2 &amp;&amp; frightened == false) {</span>
+<span class="fc" id="L1567">                                Boolean repeat = false;</span>
+
+                                // Checking if the first priority option is possible.
+<span class="fc bfc" id="L1570" title="All 2 branches covered.">                                for (int k = 0; k &lt; 4; k++) {</span>
+
+<span class="fc bfc" id="L1572" title="All 2 branches covered.">                                        if (possible [k].equals (&quot;yes&quot;) ) {</span>
+
+<span class="fc bfc" id="L1574" title="All 2 branches covered.">                                                if (directions [k].equals (option1) ) {</span>
+<span class="fc" id="L1575">                                                        repeat = false;</span>
+
+                                                        // Checking if the ghost does not 
+                                                        // turns back by making that possible move. 
+                                                        // It is allowed to do that only when it has 
+                                                        // no other choice.
+<span class="fc bfc" id="L1581" title="All 16 branches covered.">                                                        if ( (lastMove == 0 &amp;&amp; k == 1) </span>
+                                                                || (lastMove == 1 &amp;&amp; k == 0) 
+                                                                || (lastMove == 2 &amp;&amp; k == 3) 
+                                                            || (lastMove == 3 &amp;&amp; k == 2) ) {
+                                                                    
+<span class="fc" id="L1586">                                                                    repeat = true;</span>
+                                                        }
+
+<span class="fc bfc" id="L1589" title="All 2 branches covered.">                                                        if (repeat == false) {</span>
+<span class="fc" id="L1590">                                                                movePos = k;</span>
+<span class="fc" id="L1591">                                                                first =  true;</span>
+<span class="fc" id="L1592">                                                                break;</span>
+                                                        }
+                                                }
+                                        }
+                                }
+
+                                // Checking if the second priority option is possible.
+<span class="fc bfc" id="L1599" title="All 2 branches covered.">                                for (int k = 0; k &lt; 4; k++) {</span>
+
+<span class="fc bfc" id="L1601" title="All 4 branches covered.">                                        if (possible [k].equals (&quot;yes&quot;) &amp;&amp; first == false) {</span>
+
+<span class="fc bfc" id="L1603" title="All 2 branches covered.">                                                if (directions [k].equals (option2) ) {</span>
+<span class="fc" id="L1604">                                                        repeat = false;</span>
+
+
+                                                        // Checking if the ghost does not 
+                                                        // turns back by making that possible move. 
+                                                        // It is allowed to do that only when it has 
+                                                        // no other choice.
+<span class="fc bfc" id="L1611" title="All 16 branches covered.">                                                        if ( (lastMove == 0 &amp;&amp; k == 1) </span>
+                                                                || (lastMove == 1 &amp;&amp; k == 0) 
+                                                                || (lastMove == 2 &amp;&amp; k == 3) 
+                                                            || (lastMove == 3 &amp;&amp; k == 2) ) {
+
+<span class="fc" id="L1616">                                                                        repeat = true;</span>
+                                                        }
+
+<span class="fc bfc" id="L1619" title="All 2 branches covered.">                                                        if (repeat == false) {</span>
+<span class="fc" id="L1620">                                                                movePos = k;</span>
+<span class="fc" id="L1621">                                                                second =  true;</span>
+<span class="fc" id="L1622">                                                                break;</span>
+                                                        }
+                                                }
+                                        }
+                                }
+
+                                // Finding any possible move for the ghost, if both first, 
+                                // and second priorities are not possible.
+<span class="fc bfc" id="L1630" title="All 4 branches covered.">                                if (first == false &amp;&amp; second == false) {</span>
+
+<span class="pc bpc" id="L1632" title="1 of 2 branches missed.">                                        for (int k = 0; k &lt; 4; k++) {</span>
+
+<span class="fc bfc" id="L1634" title="All 2 branches covered.">                                                if (possible [k].equals (&quot;yes&quot;) ) {</span>
+<span class="fc" id="L1635">                                                        repeat =  false;</span>
+
+
+                                                        // Checking if the ghost does not 
+                                                        // turns back by making that possible move. 
+                                                        // It is allowed to do that only when it has 
+                                                        // no other choice.
+<span class="pc bpc" id="L1642" title="3 of 16 branches missed.">                                                        if ( (lastMove == 0 &amp;&amp; k == 1) </span>
+                                                                || (lastMove == 1 &amp;&amp; k==0) 
+                                                                || (lastMove == 2 &amp;&amp; k == 3) 
+                                                            || (lastMove == 3 &amp;&amp; k == 2) ) {
+                                                                
+<span class="fc" id="L1647">                                                                        repeat = true;</span>
+                                                        }
+
+<span class="fc bfc" id="L1650" title="All 2 branches covered.">                                                        if (repeat == false) {</span>
+<span class="fc" id="L1651">                                                                movePos = k;</span>
+<span class="fc" id="L1652">                                                                break;</span>
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+
+                        // If the number of possibilities is greater than 2, and the 
+                        // ghost is frightened that is ghost is at an intersection, 
+                        // the ghost decides next move randomly.
+<span class="fc bfc" id="L1662" title="All 4 branches covered.">                        if (possibilities &gt; 2 &amp;&amp; frightened == true) {</span>
+
+<span class="fc" id="L1664">                                ArrayList&lt;Integer&gt; moves = new ArrayList&lt;Integer&gt; ();</span>
+<span class="fc" id="L1665">                                Boolean repeat = false;</span>
+
+<span class="fc bfc" id="L1667" title="All 2 branches covered.">                                for (int k = 0; k &lt; 4; k++) {</span>
+
+<span class="fc bfc" id="L1669" title="All 2 branches covered.">                                        if (possible [k].equals (&quot;yes&quot;) ) {</span>
+                                             
+
+                                                // Checking if the ghost does not 
+                                                // turns back by making that possible 
+                                                // move. It is allowed to do that only 
+                                                // when it has no other choice.
+<span class="fc bfc" id="L1676" title="All 16 branches covered.">                                                if ( (lastMove == 0 &amp;&amp; k == 1) </span>
+                                                        || (lastMove == 1 &amp;&amp; k == 0) 
+                                                        || (lastMove == 2 &amp;&amp; k == 3) 
+                                                    || (lastMove == 3 &amp;&amp; k == 2) ) {
+                                                                
+<span class="fc" id="L1681">                                                            repeat = true;</span>
+                                                }
+
+                                                // Finding the list of possible moves 
+                                                // for which ghost would not turn back 
+                                                // unless that being the last option.
+<span class="fc bfc" id="L1687" title="All 2 branches covered.">                                                if (repeat == false) {</span>
+<span class="fc" id="L1688">                                                        moves.add (k);</span>
+                                                }
+                                        }
+
+                                }
+
+<span class="fc" id="L1694">                                int length = moves.size ();</span>
+<span class="fc" id="L1695">                                Random random = new Random ();</span>
+
+                                // Choosing a random integer to randomly decide the 
+                                // next move of ghost out of all the possible moves.
+<span class="fc bfc" id="L1699" title="All 2 branches covered.">                                if (length != 0) {</span>
+<span class="fc" id="L1700">                                        int pos = random.ints (0, length).findFirst ().getAsInt ();</span>
+<span class="fc" id="L1701">                                        movePos = moves.get (pos);</span>
+                                }
+
+<span class="fc bfc" id="L1704" title="All 2 branches covered.">                                if (length == 0) {</span>
+
+                                        // If no move is possible, and only option 
+                                        // available is turning back, then the ghost 
+                                        // would turn back.
+<span class="fc bfc" id="L1709" title="All 2 branches covered.">                                        for (int k = 0; k &lt; 4; k++) {</span>
+<span class="fc bfc" id="L1710" title="All 2 branches covered.">                                                if (possible [k].equals (&quot;yes&quot;) ) {</span>
+<span class="fc" id="L1711">                                                        movePos = k;</span>
+                                                }
+                                        }
+
+                                }
+                        }
+
+                        // Adding the move to the moves list.
+<span class="fc bfc" id="L1719" title="All 4 branches covered.">                        if (movePos != lastMove &amp;&amp; movePos != 9) {</span>
+<span class="fc" id="L1720">                                movesList.add (movePos);</span>
+                        }
+                }
+
+                // If the ghost has reached, then it does not has to move anywhere else.
+                // Value 9 indicates no move.
+<span class="pc bpc" id="L1726" title="1 of 2 branches missed.">                if (option1.equals (&quot;reached&quot;) ) {</span>
+<span class="nc" id="L1727">                        movePos = 9;</span>
+                }
+
+                // Moving the ghost based on its move position.
+
+<span class="fc bfc" id="L1732" title="All 2 branches covered.">                if (movePos == 0) {</span>
+<span class="pc bpc" id="L1733" title="1 of 2 branches missed.">                        if (possible [movePos].equals (&quot;yes&quot;) ) {</span>
+<span class="fc" id="L1734">                                ghosty -= this.speed;</span>
+                        }
+                }
+
+<span class="fc bfc" id="L1738" title="All 2 branches covered.">                if (movePos == 1) {</span>
+<span class="pc bpc" id="L1739" title="1 of 2 branches missed.">                        if (possible [movePos].equals (&quot;yes&quot;) ) {</span>
+<span class="fc" id="L1740">                                ghosty += this.speed;</span>
+                        }
+                }
+
+<span class="fc bfc" id="L1744" title="All 2 branches covered.">                if (movePos == 2) {</span>
+<span class="pc bpc" id="L1745" title="1 of 2 branches missed.">                        if (possible [movePos].equals (&quot;yes&quot;) ) {</span>
+<span class="fc" id="L1746">                                ghostx -= this.speed;</span>
+                        }
+                }
+
+<span class="fc bfc" id="L1750" title="All 2 branches covered.">                if (movePos == 3) {</span>
+<span class="pc bpc" id="L1751" title="1 of 2 branches missed.">                        if (possible [movePos].equals (&quot;yes&quot;) ) {</span>
+<span class="fc" id="L1752">                                ghostx += this.speed;</span>
+                        }
+                }
+
+                // Changing the position of ghost based on target location.
+<span class="fc" id="L1757">                targets.set (i, ghostx);</span>
+<span class="fc" id="L1758">                targets.set (i+1, ghosty);</span>
+        }
+<span class="fc" id="L1760">}</span>
+
+
+
+/**
+ *  Checking for different top, bottom, left, and right values of ghost, and 
+ *  wall that they are colliding or not when ghost is trying to move upwards.
+ *  It returns true if the ghost collides with wall, when it tries to move upwards, 
+ *  else it returns false.
+ * 
+ * 
+ *  @param wallTop       Coordinates of the top of wall grid.
+ *  @param wallBottom    Coordinates of the bottom of wall grid.
+ *  @param wallLeft      Coordinates of the left side of wall grid.
+ *  @param wallRight     Coordinates of the right of wall grid.
+ *  @param ghostTop      Coordinates of the top of ghost.
+ *  @param ghostBottom   Coordinates of the bottom of ghost.
+ *  @param ghostLeft     Coordinates of the left side of ghost.
+ *  @param ghostRight    Coordinates of the right side of ghost.
+ * 
+ *  @return              Outcome of ghost trying to move upwards.
+ */
+
+public boolean collisonUp (long wallTop, long wallBottom, long wallLeft, long wallRight, 
+                                long ghostTop, long ghostBottom, long ghostLeft, long ghostRight) {
+        
+<span class="fc bfc" id="L1786" title="All 8 branches covered.">        if (ghostTop &lt; wallBottom &amp;&amp; ghostTop &gt; wallTop &amp;&amp; ghostRight &lt; wallRight </span>
+                    &amp;&amp; ghostRight &gt; wallLeft) {
+                            
+<span class="fc" id="L1789">                        return true;</span>
+        }
+
+<span class="fc bfc" id="L1792" title="All 8 branches covered.">        if (ghostTop &lt; wallBottom &amp;&amp; ghostTop &gt; wallTop &amp;&amp; ghostLeft &lt; wallRight </span>
+                    &amp;&amp; ghostLeft &gt; wallLeft) {
+                
+<span class="fc" id="L1795">                        return true;</span>
+        }
+
+<span class="fc bfc" id="L1798" title="All 8 branches covered.">        if (ghostTop &lt; wallBottom &amp;&amp; ghostTop &gt; wallTop &amp;&amp; wallRight &lt; ghostRight </span>
+                    &amp;&amp; wallRight &gt; ghostLeft) {
+                
+<span class="fc" id="L1801">                        return true;</span>
+        }
+
+<span class="fc bfc" id="L1804" title="All 8 branches covered.">        if (wallTop &gt; ghostTop &amp;&amp; wallTop &lt; ghostBottom &amp;&amp; ghostRight &lt; wallRight </span>
+                    &amp;&amp; ghostRight &gt; wallLeft) {
+                
+<span class="fc" id="L1807">                        return true;</span>
+        }
+
+<span class="fc bfc" id="L1810" title="All 8 branches covered.">        if (wallTop &gt; ghostTop &amp;&amp; wallTop &lt; ghostBottom &amp;&amp; ghostLeft &lt; wallRight </span>
+                    &amp;&amp; ghostLeft &gt; wallLeft) {
+                
+<span class="fc" id="L1813">                        return true;</span>
+        }
+
+<span class="fc bfc" id="L1816" title="All 8 branches covered.">        if (wallTop &gt; ghostTop &amp;&amp; wallTop &lt; ghostBottom &amp;&amp; wallRight &lt; ghostRight </span>
+                    &amp;&amp; wallRight &gt; ghostLeft) {
+                
+<span class="fc" id="L1819">                        return true;</span>
+        }
+
+<span class="fc" id="L1822">        return false;</span>
+}
+
+
+
+
+/**
+ *  Checking for different top, bottom, left, and right values of ghost, and 
+ *  wall that they are colliding or not when ghost is trying to move downwards.
+ *  It returns true if the ghost collides with wall, when it tries to move downwards, 
+ *  else it returns false.
+ * 
+ * 
+ *  @param wallTop       Coordinates of the top of wall grid.
+ *  @param wallBottom    Coordinates of the bottom of wall grid.
+ *  @param wallLeft      Coordinates of the left side of wall grid.
+ *  @param wallRight     Coordinates of the right of wall grid.
+ *  @param ghostTop      Coordinates of the top of ghost.
+ *  @param ghostBottom   Coordinates of the bottom of ghost.
+ *  @param ghostLeft     Coordinates of the left side of ghost.
+ *  @param ghostRight    Coordinates of the right side of ghost.
+ * 
+ *  @return              Outcome of ghost trying to move downwards.
+ */
+
+public boolean collisonDown (long wallTop, long wallBottom, long wallLeft, 
+                                long wallRight, long ghostTop, long ghostBottom, 
+                            long ghostLeft, long ghostRight) {
+        
+<span class="fc bfc" id="L1851" title="All 8 branches covered.">        if (wallTop &gt; ghostTop &amp;&amp; wallTop &lt; ghostBottom &amp;&amp; ghostRight &lt; wallRight  </span>
+                    &amp;&amp; ghostRight &gt; wallLeft) {
+                
+<span class="fc" id="L1854">                        return true;</span>
+        }
+
+<span class="fc bfc" id="L1857" title="All 8 branches covered.">        if (wallTop &gt; ghostTop &amp;&amp; wallTop &lt; ghostBottom &amp;&amp; ghostLeft &lt; wallRight </span>
+                    &amp;&amp; ghostLeft &gt; wallLeft) {
+               
+<span class="fc" id="L1860">                        return true;</span>
+        }
+
+<span class="fc bfc" id="L1863" title="All 8 branches covered.">        if (wallTop &gt; ghostTop &amp;&amp; wallTop &lt; ghostBottom &amp;&amp; wallRight &lt; ghostRight </span>
+                    &amp;&amp; wallRight &gt; ghostLeft) {
+                
+<span class="fc" id="L1866">                        return true;</span>
+        }
+
+<span class="pc bpc" id="L1869" title="1 of 8 branches missed.">        if (ghostBottom &lt; wallBottom &amp;&amp; ghostBottom &gt; wallTop &amp;&amp; ghostRight &lt; wallRight </span>
+                    &amp;&amp; ghostRight &gt; wallLeft) {
+                
+<span class="nc" id="L1872">                        return true;</span>
+        }
+
+<span class="pc bpc" id="L1875" title="1 of 8 branches missed.">        if (ghostBottom &lt; wallBottom &amp;&amp; ghostBottom &gt; wallTop &amp;&amp; ghostLeft &lt; wallRight </span>
+                    &amp;&amp; ghostLeft &gt; wallLeft) {
+                
+<span class="nc" id="L1878">                        return true;</span>
+        }
+
+<span class="fc" id="L1881">        return false;</span>
+}
+
+
+
+/**
+ *  Checking for different top, bottom, left, and right values of ghost, and 
+ *  wall that they are colliding or not when ghost is trying to move right.
+ *  It returns true if the ghost collides with wall, when it tries to move right, 
+ *  else it returns false.
+ * 
+ *  @param wallTop       Coordinates of the top of wall grid.
+ *  @param wallBottom    Coordinates of the bottom of wall grid.
+ *  @param wallLeft      Coordinates of the left side of wall grid.
+ *  @param wallRight     Coordinates of the right of wall grid.
+ *  @param ghostTop      Coordinates of the top of ghost.
+ *  @param ghostBottom   Coordinates of the bottom of ghost.
+ *  @param ghostLeft     Coordinates of the left side of ghost.
+ *  @param ghostRight    Coordinates of the right side of ghost.
+ * 
+ *  @return              Outcome of ghost trying to move right.
+ */
+
+public boolean collisonRight (long wallTop, long wallBottom, long wallLeft, 
+                                    long wallRight, long ghostTop, long ghostBottom, 
+                              long ghostLeft, long ghostRight) {
+
+<span class="fc bfc" id="L1908" title="All 8 branches covered.">        if (ghostTop &gt; wallTop &amp;&amp; ghostTop &lt; wallBottom &amp;&amp; ghostRight &lt; wallRight </span>
+                    &amp;&amp; ghostRight &gt; wallLeft) {
+                
+<span class="fc" id="L1911">                        return true;</span>
+        }
+
+<span class="fc bfc" id="L1914" title="All 8 branches covered.">        if (ghostBottom &gt; wallTop &amp;&amp; ghostBottom &lt; wallBottom &amp;&amp; ghostRight &lt; wallRight </span>
+                    &amp;&amp; ghostRight &gt; wallLeft) {
+                
+<span class="fc" id="L1917">                        return true;</span>
+        }
+
+<span class="fc bfc" id="L1920" title="All 8 branches covered.">        if (ghostTop &lt; wallTop &amp;&amp; ghostBottom &gt; wallTop &amp;&amp; ghostRight &gt; wallRight </span>
+                    &amp;&amp; wallRight &gt; ghostLeft) {
+                
+<span class="fc" id="L1923">                        return true;</span>
+        }
+
+<span class="pc bpc" id="L1926" title="1 of 8 branches missed.">        if (ghostBottom &gt; wallTop &amp;&amp; ghostBottom &lt; wallBottom &amp;&amp; wallRight &lt; ghostRight</span>
+                     &amp;&amp; wallRight &gt; ghostLeft) {
+                
+<span class="nc" id="L1929">                        return true;</span>
+        }
+
+<span class="fc bfc" id="L1932" title="All 8 branches covered.">        if (ghostTop &gt; wallTop &amp;&amp; ghostTop &lt; wallBottom &amp;&amp; wallLeft &lt; ghostRight </span>
+                    &amp;&amp; wallLeft &gt; ghostLeft) {
+                
+<span class="fc" id="L1935">                        return true;</span>
+        }
+
+<span class="fc" id="L1938">        return false;</span>
+}
+
+
+
+/**
+ *  Checking for different top, bottom, left, and right values of ghost, and wall 
+ *  that they are colliding or not when ghost is trying to move left.
+ *  It returns true if the ghost collides with wall, when it tries to move left, 
+ *  else it returns false.
+ * 
+ * 
+ *  @param wallTop       Coordinates of the top of wall grid.
+ *  @param wallBottom    Coordinates of the bottom of wall grid.
+ *  @param wallLeft      Coordinates of the left side of wall grid.
+ *  @param wallRight     Coordinates of the right of wall grid.
+ *  @param ghostTop      Coordinates of the top of ghost.
+ *  @param ghostBottom   Coordinates of the bottom of ghost.
+ *  @param ghostLeft     Coordinates of the left side of ghost.
+ *  @param ghostRight    Coordinates of the right side of ghost.
+ * 
+ *  @return              Outcome of ghost trying to move left.
+ */
+
+public boolean collisonLeft1 (long wallTop, long wallBottom, long wallLeft, 
+                                    long wallRight, long ghostTop, long ghostBottom, 
+                              long ghostLeft, long ghostRight) {
+
+<span class="fc bfc" id="L1966" title="All 8 branches covered.">        if (ghostTop &lt; wallTop &amp;&amp; ghostBottom &gt; wallTop &amp;&amp; ghostRight &gt; wallRight </span>
+                &amp;&amp; wallRight &gt; ghostLeft) {
+                
+<span class="fc" id="L1969">                    return true;</span>
+        }
+
+<span class="pc bpc" id="L1972" title="1 of 8 branches missed.">        if (ghostBottom &gt; wallTop &amp;&amp; ghostBottom &lt; wallBottom &amp;&amp; wallRight &lt; ghostRight</span>
+                 &amp;&amp; wallRight &gt; ghostLeft) {
+                
+<span class="nc" id="L1975">                    return true;</span>
+        }
+
+<span class="fc bfc" id="L1978" title="All 8 branches covered.">        if (ghostTop &gt; wallTop &amp;&amp; ghostTop &lt; wallBottom &amp;&amp; wallLeft &lt; ghostRight </span>
+                &amp;&amp; wallLeft &gt; ghostLeft) {
+                
+<span class="fc" id="L1981">                    return true;</span>
+        }
+
+<span class="fc" id="L1984">        return false;</span>
+}
+
+
+
+
+/**
+ *  Checking for different top, bottom, left, and right values of ghost, and wall 
+ *  that they are colliding or not when ghost is trying to move left.
+ *  It returns true if the ghost collides with wall, when it tries to move left, 
+ *  else it returns false.
+ * 
+ * 
+ *  @param wallTop       Coordinates of the top of wall grid.
+ *  @param wallBottom    Coordinates of the bottom of wall grid.
+ *  @param wallLeft      Coordinates of the left side of wall grid.
+ *  @param wallRight     Coordinates of the right of wall grid.
+ *  @param ghostTop      Coordinates of the top of ghost.
+ *  @param ghostBottom   Coordinates of the bottom of ghost.
+ *  @param ghostLeft     Coordinates of the left side of ghost.
+ *  @param ghostRight    Coordinates of the right side of ghost.
+ * 
+ *  @return              Outcome of ghost trying to move left.
+ */
+
+public boolean collisonLeft2 (long wallTop, long wallBottom, long wallLeft, 
+                                        long wallRight, long ghostTop, long ghostBottom, 
+                             long ghostLeft, long ghostRight) {
+
+<span class="pc bpc" id="L2013" title="1 of 8 branches missed.">        if(ghostTop &gt; wallTop &amp;&amp; ghostTop &lt; wallBottom &amp;&amp; ghostLeft &lt; wallRight </span>
+                &amp;&amp; ghostLeft &gt; wallLeft) {
+                
+<span class="nc" id="L2016">                    return true;</span>
+        }
+
+<span class="pc bpc" id="L2019" title="1 of 8 branches missed.">        if (ghostBottom &gt; wallTop &amp;&amp; ghostBottom &lt; wallBottom &amp;&amp; ghostLeft &lt; wallRight </span>
+                &amp;&amp; ghostLeft &gt; wallLeft) {
+                
+<span class="nc" id="L2022">                    return true;</span>
+        }
+
+<span class="fc" id="L2025">        return false;</span>
+}
+
+
+
+/**
+ * This method calculates the top, bottom, left, and right position of wall, and 
+ * ghost, and checks if it is colliding when ghost tries to move upwards or not.
+ * It returns true if the ghost is able to move upwards without colliding, else 
+ * it returns false.
+ * 
+ * @param startx    x-axis position of ghost.
+ * @param starty    y-axis position of ghost.
+ * @param targets   List of positions of ghost.
+ * @param spirit    PImange of the ghost which we are trying to move upwards.
+ * 
+ * @return    Outcome of ghost trying to move upwards.
+ */
+
+
+public boolean isCollidingUp (long startx, long starty, ArrayList&lt;Long&gt; targets, 
+                                    PImage spirit) {
+
+        // Checking if ghost is colliding with a horizontal grid space when trying to 
+        // move upwards or not.
+<span class="fc bfc" id="L2050" title="All 2 branches covered.">        for (int i = 0; i &lt; hor.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2052">                long wallTop = hor.get (i + 1);</span>
+<span class="fc" id="L2053">                long wallBottom = hor.get (i + 1) + 8;</span>
+<span class="fc" id="L2054">                long wallLeft = hor.get (i);</span>
+<span class="fc" id="L2055">                long wallRight = hor.get (i) + 16;</span>
+
+<span class="fc" id="L2057">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2058">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2059">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2060">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2062" title="All 2 branches covered.">                if (collisonUp (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                    ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2065">                                        return true;</span>
+                }
+
+        }
+
+        // Checking if ghost is colliding with an up right grid space when trying to 
+        // move upwards or not.
+<span class="fc bfc" id="L2072" title="All 2 branches covered.">        for(int i = 0; i &lt; upR.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2074">                long wallTop = upR.get (i + 1);</span>
+<span class="fc" id="L2075">                long wallBottom = upR.get (i + 1) + 8;</span>
+<span class="fc" id="L2076">                long wallLeft = upR.get (i) + 8;</span>
+<span class="fc" id="L2077">                long wallRight = upR.get (i) + 16;</span>
+
+<span class="fc" id="L2079">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2080">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2081">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2082">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2084" title="All 2 branches covered.">                if (collisonUp (wallTop, wallBottom, wallLeft, wallRight, ghostTop,</span>
+                                     ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2087">                                        return true;</span>
+                }
+        }
+
+        // Checking if ghost is colliding with an up left grid space when trying to 
+        // move upwards or not.
+<span class="fc bfc" id="L2093" title="All 2 branches covered.">        for (int i = 0; i &lt; upL.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2095">                long wallTop = upL.get (i + 1);</span>
+<span class="fc" id="L2096">                long wallBottom = upL.get (i + 1) + 8;</span>
+<span class="fc" id="L2097">                long wallLeft = upL.get (i);</span>
+<span class="fc" id="L2098">                long wallRight = upL.get (i) + 8;</span>
+
+<span class="fc" id="L2100">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2101">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2102">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2103">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2105" title="All 2 branches covered.">                if (collisonUp (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                    ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2108">                                        return true;</span>
+                }
+        }
+
+        // Checking if ghost is colliding with a down right grid space when trying 
+        // to move upwards or not.
+<span class="fc bfc" id="L2114" title="All 2 branches covered.">        for (int i = 0; i &lt; downR.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2116">                long wallTop = downR.get (i + 1);</span>
+<span class="fc" id="L2117">                long wallBottom = downR.get (i + 1) + 8;</span>
+<span class="fc" id="L2118">                long wallLeft = downR.get (i) + 8;</span>
+<span class="fc" id="L2119">                long wallRight = downR.get (i) + 16;</span>
+
+<span class="fc" id="L2121">                long ghostTop = starty;</span>
+<span class="fc" id="L2122">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2123">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2124">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2126" title="All 2 branches covered.">                if (collisonUp (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2129">                                            return true;</span>
+                }
+        }
+
+<span class="fc" id="L2133">        return false;</span>
+
+}
+
+
+
+
+/**
+ * This method calculates the top, bottom, left, and right position of wall, 
+ * and ghost, and checks if it is colliding when ghost tries to move downwards or not.
+ * It returns true if the ghost is able to move downwards without colliding, 
+ * else it returns false.
+ * 
+ * 
+ * @param startx    x-axis position of ghost.
+ * @param starty    y-axis position of ghost.
+ * @param targets   List of positions of ghost.
+ * @param spirit    PImange of the ghost which we are trying to move downwards.
+ * 
+ * @return    Outcome of ghost trying to move downwards.
+ */
+
+
+public boolean isCollidingDown (long startx, long starty, ArrayList&lt;Long&gt; targets, 
+                                    PImage spirit) {
+
+         // Checking if ghost is colliding with a horizontal grid space when trying to 
+         // move downwards or not.
+<span class="fc bfc" id="L2161" title="All 2 branches covered.">        for (int i = 0; i &lt; hor.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2163">                long wallTop = hor.get (i + 1);</span>
+<span class="fc" id="L2164">                long wallBottom = hor.get (i + 1) + 8;</span>
+<span class="fc" id="L2165">                long wallLeft = hor.get (i);</span>
+<span class="fc" id="L2166">                long wallRight = hor.get (i) + 16;</span>
+
+<span class="fc" id="L2168">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2169">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2170">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2171">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2173" title="All 2 branches covered.">                if (collisonDown (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2176">                                            return true;</span>
+                }
+
+
+        }
+        
+        // Checking if ghost is colliding with a down right grid space when trying to 
+        // move downwards or not.
+<span class="fc bfc" id="L2184" title="All 2 branches covered.">        for (int i = 0; i &lt; downR.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2186">                long wallTop = downR.get (i + 1) + 8;</span>
+<span class="fc" id="L2187">                long wallBottom = downR.get (i + 1) + 16;</span>
+<span class="fc" id="L2188">                long wallLeft = downR.get (i) + 8;</span>
+<span class="fc" id="L2189">                long wallRight = downR.get (i) + 16;</span>
+
+<span class="fc" id="L2191">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2192">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2193">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2194">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2196" title="All 2 branches covered.">                if (collisonDown (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                    ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2199">                                        return true;</span>
+                }
+        }
+
+        // Checking if ghost is colliding with a down left grid space when trying to 
+        // move downwards or not.
+<span class="fc bfc" id="L2205" title="All 2 branches covered.">        for (int i = 0; i &lt; downL.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2207">                long wallTop = downL.get (i + 1) + 8;</span>
+<span class="fc" id="L2208">                long wallBottom = downL.get (i + 1) + 16;</span>
+<span class="fc" id="L2209">                long wallLeft = downL.get (i);</span>
+<span class="fc" id="L2210">                long wallRight = downL.get (i) + 8;</span>
+
+<span class="fc" id="L2212">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2213">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2214">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2215">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2217" title="All 2 branches covered.">                if (collisonDown (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                    ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2220">                                        return true;</span>
+                }
+        }
+
+         // Checking if ghost is colliding with a up right grid space when trying to 
+         // move downwards or not.
+<span class="fc bfc" id="L2226" title="All 2 branches covered.">        for (int i = 0; i &lt; upR.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2228">                long wallTop = upR.get (i + 1) + 8;</span>
+<span class="fc" id="L2229">                long wallBottom = upR.get (i + 1) + 16;</span>
+<span class="fc" id="L2230">                long wallLeft = upR.get (i) + 8;</span>
+<span class="fc" id="L2231">                long wallRight = upR.get (i) + 16;</span>
+
+<span class="fc" id="L2233">                long ghostTop = starty;</span>
+<span class="fc" id="L2234">                long ghostBottom = starty + spirit.height;</span>
+<span class="fc" id="L2235">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2236">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2238" title="All 2 branches covered.">                if (collisonDown (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                    ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2241">                                        return true;</span>
+                }
+        }
+
+<span class="fc" id="L2245">        return false;</span>
+}
+
+
+
+
+/**
+ * This method calculates the top, bottom, left, and right position of wall, and 
+ * ghost, and checks if it is colliding when ghost tries to move right or not.
+ * It returns true if the ghost is able to move right without colliding, else it 
+ * returns false.
+ * 
+ * 
+ * @param startx    x-axis position of ghost.
+ * @param starty    y-axis position of ghost.
+ * @param targets   List of positions of ghost.
+ * @param spirit    PImange of the ghost which we are trying to move right.
+ * 
+ * @return    Outcome of ghost trying to move right.
+ */
+
+
+public boolean isCollidingRight (long startx, long starty, ArrayList&lt;Long&gt; targets, 
+                                        PImage spirit) {
+
+         // Checking if ghost is colliding with a vertical grid space when trying to 
+         // move right or not.
+<span class="fc bfc" id="L2272" title="All 2 branches covered.">        for (int i = 0; i &lt; ver.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2274">                long wallTop = ver.get (i + 1);</span>
+<span class="fc" id="L2275">                long wallBottom = ver.get (i + 1) + 16; </span>
+<span class="fc" id="L2276">                long wallLeft = ver.get (i) + 8;</span>
+<span class="fc" id="L2277">                long wallRight = ver.get (i) + 16;</span>
+
+<span class="fc" id="L2279">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2280">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2281">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2282">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2284" title="All 2 branches covered.">                if (collisonRight (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2287">                                            return true;</span>
+                }
+        }
+
+        // Checking if ghost is colliding with a down left grid space when trying to 
+        // move right or not.
+<span class="fc bfc" id="L2293" title="All 2 branches covered.">        for (int i = 0; i &lt; downL.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2295">                long wallTop = downL.get (i + 1) + 8;</span>
+<span class="fc" id="L2296">                long wallBottom = downL.get (i + 1) + 16;</span>
+<span class="fc" id="L2297">                long wallLeft = downL.get (i) + 8;</span>
+<span class="fc" id="L2298">                long wallRight = downL.get (i) + 16;</span>
+
+<span class="fc" id="L2300">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2301">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2302">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2303">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2305" title="All 2 branches covered.">                if (collisonRight (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2308">                                            return true;</span>
+                }
+        }
+
+        // Checking if ghost is colliding with a down right grid space when trying to 
+        // move right or not.
+<span class="fc bfc" id="L2314" title="All 2 branches covered.">        for (int i = 0; i &lt; downR.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2316">                long wallTop = downR.get (i + 1) + 8;</span>
+<span class="fc" id="L2317">                long wallBottom = downR.get (i + 1) + 16;</span>
+<span class="fc" id="L2318">                long wallLeft = downR.get (i) + 8;</span>
+<span class="fc" id="L2319">                long wallRight = downR.get (i) + 16;</span>
+
+<span class="fc" id="L2321">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2322">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2323">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2324">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2326" title="All 2 branches covered.">                if (collisonRight (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2329">                                            return true;</span>
+                }
+        }
+
+        // Checking if ghost is colliding with an up left grid space when trying to 
+        // move right or not.
+<span class="fc bfc" id="L2335" title="All 2 branches covered.">        for (int i = 0; i &lt; upL.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2337">                long wallTop = upL.get (i + 1);</span>
+<span class="fc" id="L2338">                long wallBottom = upL.get (i + 1) + 8;</span>
+<span class="fc" id="L2339">                long wallLeft = upL.get (i) + 8;</span>
+<span class="fc" id="L2340">                long wallRight = upL.get (i) + 16;</span>
+
+<span class="fc" id="L2342">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2343">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2344">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2345">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2347" title="All 2 branches covered.">                if (collisonRight (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2350">                                            return true;</span>
+                }
+        }
+
+        // Checking if ghost is colliding with an up right grid space when trying to 
+        //move right or not.
+<span class="fc bfc" id="L2356" title="All 2 branches covered.">        for (int i = 0; i &lt; upR.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2358">                long wallTop = upR.get (i + 1);</span>
+<span class="fc" id="L2359">                long wallBottom = upR.get (i + 1) + 8;</span>
+<span class="fc" id="L2360">                long wallLeft = upR.get (i) + 8;</span>
+<span class="fc" id="L2361">                long wallRight = upR.get (i) + 16;</span>
+
+<span class="fc" id="L2363">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2364">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2365">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2366">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2368" title="All 2 branches covered.">                if (collisonRight (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2371">                                            return true;</span>
+                }
+        }
+
+<span class="fc" id="L2375">        return false;</span>
+}
+
+
+
+
+/**
+ * This method calculates the top, bottom, left, and right position of wall, and 
+ * ghost, and checks if it is colliding when ghost tries to move left or not.
+ * It returns true if the ghost is able to move left without colliding, else it 
+ * returns false.
+ * 
+ * 
+ * @param startx    x-axis position of ghost.
+ * @param starty    y-axis position of ghost.
+ * @param targets   List of positions of ghost.
+ * @param spirit    PImange of the ghost which we are trying to move left.
+ * 
+ * @return    Outcome of ghost trying to move left.
+ */
+
+
+
+public boolean isCollidingLeft (long startx, long starty, ArrayList&lt;Long&gt; targets, 
+                                        PImage spirit) {
+
+         // Checking if ghost is colliding with a vertical grid space when trying 
+         // to move left or not.
+<span class="fc bfc" id="L2403" title="All 2 branches covered.">        for (int i = 0; i &lt; ver.size () - 1; i += 2) {</span>
+
+<span class="fc" id="L2405">                long wallTop = ver.get (i + 1);</span>
+<span class="fc" id="L2406">                long wallBottom = ver.get (i + 1) + 16;</span>
+<span class="fc" id="L2407">                long wallLeft = ver.get (i) + 8;</span>
+<span class="fc" id="L2408">                long wallRight = ver.get (i) + 16;</span>
+
+<span class="fc" id="L2410">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2411">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2412">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2413">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2415" title="All 2 branches covered.">                if (collisonLeft1 (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2418">                                            return true;</span>
+                }
+
+<span class="fc" id="L2421">                wallLeft = ver.get (i);</span>
+<span class="fc" id="L2422">                wallRight = ver.get (i) + 8;</span>
+
+<span class="pc bpc" id="L2424" title="1 of 2 branches missed.">                if (collisonLeft2 (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="nc" id="L2427">                                            return true;</span>
+                }
+
+        }
+
+        // Checking if ghost is colliding with an up left grid space when trying 
+        // to move left or not.
+<span class="fc bfc" id="L2434" title="All 2 branches covered.">        for (int i = 0; i &lt; upL.size () - 1; i += 2) {</span>
+<span class="fc" id="L2435">                long wallTop = upL.get (i + 1);</span>
+<span class="fc" id="L2436">                long wallBottom = upL.get (i + 1) + 8;</span>
+<span class="fc" id="L2437">                long wallLeft = upL.get (i) + 8;</span>
+<span class="fc" id="L2438">                long wallRight = upL.get (i) + 16;</span>
+
+<span class="fc" id="L2440">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2441">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2442">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2443">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2445" title="All 2 branches covered.">                if (collisonLeft1 (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2448">                                            return true;</span>
+                }
+
+<span class="fc" id="L2451">                wallTop = upL.get (i + 1);</span>
+<span class="fc" id="L2452">                wallBottom = upL.get (i + 1) + 8;</span>
+<span class="fc" id="L2453">                wallLeft = upL.get (i);</span>
+<span class="fc" id="L2454">                wallRight = upL.get (i) + 8;</span>
+
+<span class="pc bpc" id="L2456" title="1 of 2 branches missed.">                if (collisonLeft2 (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="nc" id="L2459">                                            return true;</span>
+                }
+        }
+
+        // Checking if ghost is colliding with an up right grid space when trying to 
+        // move left or not.
+<span class="fc bfc" id="L2465" title="All 2 branches covered.">        for (int i = 0; i &lt; upR.size () - 1; i += 2) {</span>
+<span class="fc" id="L2466">                long wallTop = upR.get (i + 1);</span>
+<span class="fc" id="L2467">                long wallBottom = upR.get (i + 1) + 8;</span>
+<span class="fc" id="L2468">                long wallLeft = upR.get (i) + 8;</span>
+<span class="fc" id="L2469">                long wallRight = upR.get (i) + 16;</span>
+
+<span class="fc" id="L2471">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2472">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2473">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2474">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2476" title="All 2 branches covered.">                if (collisonLeft1 (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2479">                                            return true;</span>
+                }
+
+<span class="fc" id="L2482">                wallTop = upR.get (i + 1);</span>
+<span class="fc" id="L2483">                wallBottom = upR.get (i + 1) + 8;</span>
+<span class="fc" id="L2484">                wallLeft = upR.get (i);</span>
+<span class="fc" id="L2485">                wallRight = upR.get (i) + 8;</span>
+
+<span class="pc bpc" id="L2487" title="1 of 2 branches missed.">                if (collisonLeft2 (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="nc" id="L2490">                                            return true;</span>
+                }
+        }
+
+        // Checking if ghost is colliding with a down left grid space when trying to 
+        // move left or not.
+<span class="fc bfc" id="L2496" title="All 2 branches covered.">        for (int i = 0; i &lt; downL.size () - 1; i += 2) {</span>
+<span class="fc" id="L2497">                long wallTop = downL.get (i + 1) + 8;</span>
+<span class="fc" id="L2498">                long wallBottom = downL.get (i + 1) + 16;</span>
+<span class="fc" id="L2499">                long wallLeft = downL.get (i) + 8;</span>
+<span class="fc" id="L2500">                long wallRight = downL.get (i) + 16;</span>
+
+<span class="fc" id="L2502">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2503">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2504">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2505">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2507" title="All 2 branches covered.">                if (collisonLeft1 (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2510">                                            return true;</span>
+                }
+
+<span class="fc" id="L2513">                wallTop = downL.get (i + 1) + 8;</span>
+<span class="fc" id="L2514">                wallBottom = downL.get (i + 1) + 16;</span>
+<span class="fc" id="L2515">                wallLeft = downL.get (i);</span>
+<span class="fc" id="L2516">                wallRight = downL.get (i) + 8;</span>
+
+<span class="pc bpc" id="L2518" title="1 of 2 branches missed.">                if (collisonLeft2(wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="nc" id="L2521">                                            return true;</span>
+                }
+        }
+
+        // Checking if ghost is colliding with a down right grid space when trying to 
+        // move left or not.
+<span class="fc bfc" id="L2527" title="All 2 branches covered.">        for (int i = 0; i &lt; downR.size () - 1; i += 2) {</span>
+<span class="fc" id="L2528">                long wallTop = downR.get (i + 1) + 8;</span>
+<span class="fc" id="L2529">                long wallBottom = downR.get (i + 1) + 16;</span>
+<span class="fc" id="L2530">                long wallLeft = downR.get (i) + 8;</span>
+<span class="fc" id="L2531">                long wallRight = downR.get (i) + 16;</span>
+
+<span class="fc" id="L2533">                long ghostTop = starty + 3;</span>
+<span class="fc" id="L2534">                long ghostBottom = starty + spirit.height - 3;</span>
+<span class="fc" id="L2535">                long ghostLeft = startx + 2;</span>
+<span class="fc" id="L2536">                long ghostRight = startx + spirit.width - 2;</span>
+
+<span class="fc bfc" id="L2538" title="All 2 branches covered.">                if (collisonLeft1 (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                        ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="fc" id="L2541">                                            return true;</span>
+                }
+
+<span class="fc" id="L2544">                wallTop = downR.get (i + 1) + 8;</span>
+<span class="fc" id="L2545">                wallBottom = downR.get (i + 1) + 16;</span>
+<span class="fc" id="L2546">                wallLeft = downR.get (i);</span>
+<span class="fc" id="L2547">                wallRight = downR.get (i) + 8;</span>
+
+<span class="pc bpc" id="L2549" title="1 of 2 branches missed.">                if (collisonLeft2 (wallTop, wallBottom, wallLeft, wallRight, ghostTop, </span>
+                                            ghostBottom, ghostLeft, ghostRight) == true) {
+                        
+<span class="nc" id="L2552">                                                return true;</span>
+                }
+        }
+
+<span class="fc" id="L2556">        return false;</span>
+}
+
+/**
+*  It is called sixty (frame rate) times per second. 
+*/
+
+public void tick () {
+
+<span class="fc" id="L2565">}</span>
+
+/**
+ *  It is the draw method which is called sixty (frame rate) times per second. 
+ *  It draws the image of different ghosts at their respective position using the 
+ *  required PImage.
+ * 
+ * @param app PApplet app object.
+ */
+
+// Draw method.
+public void draw (PApplet app) {
+
+        PImage spirit;
+
+        // If ambusher is alive then we draw it to the screen.
+<span class="pc bpc" id="L2581" title="1 of 2 branches missed.">        if (ambusherAlive == true) {</span>
+<span class="fc bfc" id="L2582" title="All 2 branches covered.">                for (int i = 0; i &lt; targetsAmbusher.size () - 1; i += 2) {</span>
+
+                        // If ghost is in frightened mode, then we draw the frightened 
+                        // image to screen instead of ambusher image.
+
+<span class="fc bfc" id="L2587" title="All 2 branches covered.">                        if (frightened == true) {</span>
+<span class="fc" id="L2588">                                spirit = this.fright;</span>
+                        } else {
+<span class="fc" id="L2590">                                spirit = this.ambusher;</span>
+                        }
+<span class="fc" id="L2592">                        app.image (spirit, (long) targetsAmbusher.get (i),</span>
+<span class="fc" id="L2593">                                        (long) targetsAmbusher.get (i + 1) );</span>
+
+                }
+        }
+
+        // If ignorant is alive then we draw it to the screen.
+<span class="pc bpc" id="L2599" title="1 of 2 branches missed.">        if (ignorantAlive == true) {</span>
+<span class="fc bfc" id="L2600" title="All 2 branches covered.">                for (int i = 0; i &lt; targetsIgnorant.size () - 1; i += 2) {</span>
+
+                        // If ghost is in frightened mode, then we draw the frightened 
+                        // image to screen instead of ignorant image.
+
+<span class="fc bfc" id="L2605" title="All 2 branches covered.">                        if (frightened == true) {</span>
+<span class="fc" id="L2606">                                spirit = this.fright;</span>
+                        } else {
+<span class="fc" id="L2608">                                spirit = this.ignorant;</span>
+                        }
+<span class="fc" id="L2610">                        app.image (spirit, (long) targetsIgnorant.get (i), </span>
+<span class="fc" id="L2611">                                        (long) targetsIgnorant.get (i + 1) );</span>
+
+                }
+        }
+
+        // If whim is alive then we draw it to the screen.
+<span class="pc bpc" id="L2617" title="1 of 2 branches missed.">        if (whimAlive == true) {</span>
+<span class="fc bfc" id="L2618" title="All 2 branches covered.">                for (int i = 0; i &lt; targetsWhim.size () - 1; i += 2) {</span>
+
+                        // If ghost is in frightened mode, then we draw the frightened 
+                        // image to screen instead of whim image.
+
+<span class="fc bfc" id="L2623" title="All 2 branches covered.">                        if (frightened == true) {</span>
+<span class="fc" id="L2624">                                spirit = this.fright;</span>
+                        } else{
+<span class="fc" id="L2626">                                spirit = this.whim;</span>
+                        }
+<span class="fc" id="L2628">                        app.image (spirit, (long) targetsWhim.get (i), </span>
+<span class="fc" id="L2629">                                        (long) targetsWhim.get (i + 1) );</span>
+
+                }
+        }
+
+        // If chaser is alive then we draw it to the screen.
+<span class="pc bpc" id="L2635" title="1 of 2 branches missed.">        if (chaserAlive == true) {</span>
+<span class="fc bfc" id="L2636" title="All 2 branches covered.">                for (int i = 0; i &lt; targetsChaser.size () - 1; i += 2) {</span>
+
+                        // If ghost is in frightened mode, then we draw the frightened 
+                        // image to screen instead of chaser image.
+
+<span class="fc bfc" id="L2641" title="All 2 branches covered.">                        if (frightened == true) {</span>
+<span class="fc" id="L2642">                                spirit = this.fright;</span>
+                        } else{
+<span class="fc" id="L2644">                                spirit = this.chaser;</span>
+                        }
+<span class="fc" id="L2646">                        app.image (spirit, (long) targetsChaser.get (i), </span>
+<span class="fc" id="L2647">                                        (long) targetsChaser.get (i + 1) );</span>
+
+                }
+        }
+<span class="fc" id="L2651">}</span>
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

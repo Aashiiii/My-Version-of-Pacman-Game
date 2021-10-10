@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ghost.WakaTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2020-11-22T12:13:06" hostname="Aashikas-MBP" time="30.857">
+  <properties/>
+  <testcase name="constructor()" classname="ghost.WakaTest" time="0.0"/>
+  <testcase name="checkCollisonLeft()" classname="ghost.WakaTest" time="3.218"/>
+  <testcase name="checkCollisonLeft2()" classname="ghost.WakaTest" time="3.482"/>
+  <testcase name="checkCollisonMixed()" classname="ghost.WakaTest" time="5.152"/>
+  <testcase name="checkCollisonRight()" classname="ghost.WakaTest" time="2.346"/>
+  <testcase name="checkCollisonRight2()" classname="ghost.WakaTest" time="0.795"/>
+  <testcase name="checkCollison2()" classname="ghost.WakaTest" time="0.666"/>
+  <testcase name="checkCollison3()" classname="ghost.WakaTest" time="0.688"/>
+  <testcase name="checkCollison4()" classname="ghost.WakaTest" time="1.127"/>
+  <testcase name="checkCollison5()" classname="ghost.WakaTest" time="1.005"/>
+  <testcase name="checkCollison6()" classname="ghost.WakaTest" time="0.789"/>
+  <testcase name="checkCollison7()" classname="ghost.WakaTest" time="1.298"/>
+  <testcase name="checkMove2()" classname="ghost.WakaTest" time="1.342"/>
+  <testcase name="checkMove3()" classname="ghost.WakaTest" time="0.806"/>
+  <testcase name="checkMove4()" classname="ghost.WakaTest" time="1.159"/>
+  <testcase name="checkMove5()" classname="ghost.WakaTest" time="1.351"/>
+  <testcase name="checkMove6()" classname="ghost.WakaTest" time="0.916"/>
+  <testcase name="checkCollisonUp()" classname="ghost.WakaTest" time="2.094"/>
+  <testcase name="checkMove()" classname="ghost.WakaTest" time="1.298"/>
+  <testcase name="checkCollison()" classname="ghost.WakaTest" time="1.312"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

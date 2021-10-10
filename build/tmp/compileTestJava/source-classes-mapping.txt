@@ -1,0 +1,14 @@
+ghost/WakaTest.java
+ ghost.WakaTest
+ghost/FruitTest.java
+ ghost.FruitTest
+ghost/ConfigTest.java
+ ghost.ConfigTest
+ghost/GameManagerTest.java
+ ghost.GameManagerTest
+ghost/MapTest.java
+ ghost.MapTest
+ghost/GhostTest.java
+ ghost.GhostTest
+ghost/AppTest.java
+ ghost.AppTest

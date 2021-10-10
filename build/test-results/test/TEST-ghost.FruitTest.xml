@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ghost.FruitTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2020-11-22T12:13:37" hostname="Aashikas-MBP" time="4.808">
+  <properties/>
+  <testcase name="gameWon2()" classname="ghost.FruitTest" time="1.494"/>
+  <testcase name="gameWon3()" classname="ghost.FruitTest" time="1.759"/>
+  <testcase name="gameWon4()" classname="ghost.FruitTest" time="1.531"/>
+  <testcase name="startingFrightenedMode()" classname="ghost.FruitTest" time="0.003"/>
+  <testcase name="constructor()" classname="ghost.FruitTest" time="0.0"/>
+  <testcase name="fruits()" classname="ghost.FruitTest" time="0.001"/>
+  <testcase name="frightenedStartTime()" classname="ghost.FruitTest" time="0.0"/>
+  <testcase name="removeSuperFruits()" classname="ghost.FruitTest" time="0.001"/>
+  <testcase name="gameWonWhenNot()" classname="ghost.FruitTest" time="0.001"/>
+  <testcase name="gameWonWhenWon()" classname="ghost.FruitTest" time="0.001"/>
+  <testcase name="removeFruit()" classname="ghost.FruitTest" time="0.002"/>
+  <testcase name="eaten()" classname="ghost.FruitTest" time="0.002"/>
+  <testcase name="checkRemoveSuperFruits()" classname="ghost.FruitTest" time="0.001"/>
+  <testcase name="checkRemoveFruits()" classname="ghost.FruitTest" time="0.001"/>
+  <testcase name="superFruits()" classname="ghost.FruitTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

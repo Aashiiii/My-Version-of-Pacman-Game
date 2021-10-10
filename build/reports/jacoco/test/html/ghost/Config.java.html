@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Config.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">waka</a> &gt; <a href="index.source.html" class="el_package">ghost</a> &gt; <span class="el_source">Config.java</span></div><h1>Config.java</h1><pre class="source lang-java linenums">
+
+package ghost;
+
+import processing.core.PApplet;
+import processing.core.PImage;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import java.io.*;
+import java.text.ParseException;
+import java.util.*;
+
+/**
+ *  Reads in the json file, and manipulates the map file to create different map attributes.
+ */
+
+public class Config {
+
+private String mapfile;
+
+// Variable to store the number of lives.
+private long lives;
+
+// Variable to store the speed of waka, and ghost.
+private long speed;
+
+// Variable to store the duration of one round of ghosts's mode lengths.
+private long duration;
+
+// Variable to store the length of the frightened mode.
+private long frightenedLength;
+
+// Variable to store the starting x-axis position of waka.
+private long wakaStartX;
+
+// Variable to store the starting y-axis position of waka.
+private long wakaStartY;
+
+// Variable to store the ghost mode lengths.
+private ArrayList&lt;Long&gt; modeLength;
+
+// Variable to store the x-axis position, followed by y-axis position of ambusher 
+// ghosts in the form of a list.
+private ArrayList&lt;Long&gt; ghostsAmbusher;
+
+// Variable to store the x-axis position, followed by y-axis position of chaser 
+// ghosts in the form of a list.
+private ArrayList&lt;Long&gt; ghostsChaser;
+
+// Variable to store the x-axis position, followed by y-axis position of ignorant 
+// ghosts in the form of a list.
+private ArrayList&lt;Long&gt; ghostsIgnorant;
+
+// Variable to store the x-axis position, followed by y-axis position of whim 
+// ghosts in the form of a list.
+private ArrayList&lt;Long&gt; ghostsWhim;
+
+// Variable to store the x-axis position, followed by y-axis position of 
+// down left grid blocks.
+private ArrayList&lt;Integer&gt; downL;
+
+// Variable to store the x-axis position, followed by y-axis position of 
+// down right grid blocks.
+private ArrayList&lt;Integer&gt; downR;
+
+// Variable to store the x-axis position, followed by y-axis position of 
+// up left grid blocks.
+private ArrayList&lt;Integer&gt; upL;
+
+// Variable to store the x-axis position, followed by y-axis position of 
+// up right grid blocks.
+private ArrayList&lt;Integer&gt; upR;
+
+// Variable to store the x-axis position, followed by y-axis position of 
+// horizontal grid blocks.
+private ArrayList&lt;Integer&gt; hor;
+
+// Variable to store the x-axis position, followed by y-axis position of 
+// vertical grid blocks.
+private ArrayList&lt;Integer&gt; ver;
+
+// Variable to store the x-axis position, followed by y-axis position of 
+// fruits on map.
+private ArrayList&lt;Integer&gt; fruits;
+
+// Variable to store the x-axis position, followed by y-axis position of 
+// super fruits on map.
+private ArrayList&lt;Integer&gt; superFruits;
+
+
+/**
+ *  Constructs a new Config object.
+ * 
+ *  @param filename of the json file.
+ */
+
+// Constructor.
+<span class="fc" id="L99">public Config (String filename) {</span>
+
+<span class="fc" id="L101">        fruits = new ArrayList&lt;Integer&gt; ();</span>
+<span class="fc" id="L102">        superFruits = new ArrayList&lt;Integer&gt; ();</span>
+<span class="fc" id="L103">        modeLength = new ArrayList&lt;Long&gt; ();</span>
+<span class="fc" id="L104">        ghostsAmbusher = new ArrayList&lt;Long&gt; ();</span>
+<span class="fc" id="L105">        ghostsIgnorant = new ArrayList&lt;Long&gt; ();</span>
+<span class="fc" id="L106">        ghostsChaser = new ArrayList&lt;Long&gt; ();</span>
+<span class="fc" id="L107">        ghostsWhim = new ArrayList&lt;Long&gt; ();</span>
+
+<span class="fc" id="L109">        this.hor = new ArrayList&lt;Integer&gt; ();</span>
+<span class="fc" id="L110">        this.ver = new ArrayList&lt;Integer&gt; ();</span>
+<span class="fc" id="L111">        this.downL = new ArrayList&lt;Integer&gt; ();</span>
+<span class="fc" id="L112">        this.downR = new ArrayList&lt;Integer&gt; ();</span>
+<span class="fc" id="L113">        this.upL = new ArrayList&lt;Integer&gt; ();</span>
+<span class="fc" id="L114">        this.upR = new ArrayList&lt;Integer&gt; ();</span>
+
+<span class="fc" id="L116">        JSONParser parser = new JSONParser ();</span>
+        
+        // Reading different attributes from the json file.
+        try {
+<span class="fc" id="L120">                Object obj = parser.parse (new FileReader (filename) );</span>
+<span class="fc" id="L121">                JSONObject jsonObject = (JSONObject) obj;</span>
+
+                // Reading map filename from json file.
+<span class="fc" id="L124">                this.mapfile = (String) jsonObject.get (&quot;map&quot;);</span>
+
+                // Reading number of lives from json file.
+<span class="fc" id="L127">                this.lives = (long) jsonObject.get (&quot;lives&quot;);</span>
+
+                // Reading speed of waka, and ghost from json file.
+<span class="fc" id="L130">                this.speed = (long) jsonObject.get (&quot;speed&quot;);</span>
+
+                // Reading length of frightened ghost mode from json file.
+<span class="fc" id="L133">                this.frightenedLength = (long) jsonObject.get (&quot;frightenedLength&quot;);</span>
+
+                // Reading mode lengths for the ghost from json file.
+<span class="fc" id="L136">                JSONArray jsonArray = (JSONArray) jsonObject.get (&quot;modeLengths&quot;);</span>
+
+                
+                // Storing the mode lengths in the form of an ArrayList.
+<span class="fc bfc" id="L140" title="All 2 branches covered.">                for (int i = 0; i &lt; jsonArray.size(); i++) {</span>
+<span class="fc" id="L141">                        modeLength.add ( (long) jsonArray.get (i) );</span>
+                        
+                        // Calculating the duration by adding all the values of 
+                        // mode lengths.
+<span class="fc" id="L145">                        duration += (long) jsonArray.get (i);</span>
+                }
+        
+<span class="nc" id="L148">        } catch (Exception e) {</span>
+<span class="nc" id="L149">                System.out.println (&quot;Error when reading file&quot;);</span>
+<span class="fc" id="L150">        }</span>
+
+        BufferedReader reader;
+        try {
+
+<span class="fc" id="L155">                reader = new BufferedReader (new FileReader (this.mapfile) );</span>
+
+                // Storing the first line of the file.
+<span class="fc" id="L158">                String line = reader.readLine ();</span>
+<span class="fc" id="L159">                int lineNumber = 0;</span>
+                
+
+                // Reading the contents of the map file.
+<span class="fc bfc" id="L163" title="All 2 branches covered.">                while (line != null) {</span>
+
+<span class="fc bfc" id="L165" title="All 2 branches covered.">                        for(int i = 0; i &lt; line.length (); i++) {</span>
+
+                                // Extracting every character of each line of the file.
+<span class="fc" id="L168">                                char c = line.charAt (i);</span>
+                                
+
+                                // Comparing different characters of the file, 
+                                // and adding their x-axix, and y-axix position to their 
+                                // particular variables.
+
+<span class="fc bfc" id="L175" title="All 2 branches covered.">                                if (c == '7') {</span>
+
+<span class="fc" id="L177">                                        fruits.add ( (Integer) i*16);</span>
+<span class="fc" id="L178">                                        fruits.add ( (Integer) lineNumber*16);</span>
+
+<span class="fc bfc" id="L180" title="All 2 branches covered.">                                } else if (c == '8') {</span>
+
+<span class="fc" id="L182">                                        superFruits.add ( (Integer) i*16 + 4);</span>
+<span class="fc" id="L183">                                        superFruits.add ( (Integer) lineNumber*16 + 4);</span>
+
+<span class="fc bfc" id="L185" title="All 2 branches covered.">                                } else if(c == 'p') {</span>
+
+<span class="fc" id="L187">                                        wakaStartX = (long)i*16;</span>
+<span class="fc" id="L188">                                        wakaStartY = (long)lineNumber*16-5;</span>
+
+<span class="fc bfc" id="L190" title="All 2 branches covered.">                                } else if(c == 'a') {</span>
+
+<span class="fc" id="L192">                                        ghostsAmbusher.add ( (long) i*16);</span>
+<span class="fc" id="L193">                                        ghostsAmbusher.add ( (long) (lineNumber*16 - 5) );</span>
+
+<span class="fc bfc" id="L195" title="All 2 branches covered.">                                } else if(c == 'w') {</span>
+
+<span class="fc" id="L197">                                        ghostsWhim.add ( (long) i*16);</span>
+<span class="fc" id="L198">                                        ghostsWhim.add ( (long) (lineNumber*16 - 5) );</span>
+
+<span class="fc bfc" id="L200" title="All 2 branches covered.">                                } else if(c == 'i') {</span>
+
+<span class="fc" id="L202">                                        ghostsIgnorant.add ( (long) i*16);</span>
+<span class="fc" id="L203">                                        ghostsIgnorant.add ( (long) (lineNumber*16 - 5) );</span>
+
+<span class="fc bfc" id="L205" title="All 2 branches covered.">                                } else if(c == 'c') {</span>
+
+<span class="fc" id="L207">                                        ghostsChaser.add ( (long) i*16);</span>
+<span class="fc" id="L208">                                        ghostsChaser.add ( (long) (lineNumber*16 - 5) );</span>
+
+<span class="fc bfc" id="L210" title="All 2 branches covered.">                                } else if(c == '5') {</span>
+
+<span class="fc" id="L212">                                        downL.add ( (Integer) i*16 );</span>
+<span class="fc" id="L213">                                        downL.add ( (Integer) lineNumber*16);</span>
+
+<span class="fc bfc" id="L215" title="All 2 branches covered.">                                } else if(c == '2') {</span>
+
+<span class="fc" id="L217">                                        ver.add ( (Integer) i*16);</span>
+<span class="fc" id="L218">                                        ver.add ( (Integer) lineNumber*16);</span>
+
+<span class="fc bfc" id="L220" title="All 2 branches covered.">                                } else if(c == '1') {</span>
+
+<span class="fc" id="L222">                                        hor.add ( (Integer) i*16);</span>
+<span class="fc" id="L223">                                        hor.add ( (Integer) lineNumber*16);</span>
+
+<span class="fc bfc" id="L225" title="All 2 branches covered.">                                } else if(c == '3') {</span>
+
+<span class="fc" id="L227">                                        upL.add ( (Integer) i*16);</span>
+<span class="fc" id="L228">                                        upL.add ( (Integer) lineNumber*16);</span>
+
+<span class="fc bfc" id="L230" title="All 2 branches covered.">                                } else if(c == '4') {</span>
+
+<span class="fc" id="L232">                                        upR.add ( (Integer) i*16);</span>
+<span class="fc" id="L233">                                        upR.add ( (Integer) lineNumber*16);</span>
+
+<span class="fc bfc" id="L235" title="All 2 branches covered.">                                } else if(c == '6') {</span>
+
+<span class="fc" id="L237">                                        downR.add ( (Integer) i*16);</span>
+<span class="fc" id="L238">                                        downR.add ( (Integer) lineNumber*16);</span>
+
+                                }
+                        }
+ 
+                        // Reading next line of the file.
+<span class="fc" id="L244">                        line = reader.readLine (); </span>
+
+                        // Stores the line number of the line of the file being read.
+<span class="fc" id="L247">                        lineNumber += 1; </span>
+                }
+<span class="fc" id="L249">                reader.close ();</span>
+        
+<span class="nc" id="L251">            } catch (IOException e) {</span>
+<span class="nc" id="L252">                e.printStackTrace ();</span>
+<span class="fc" id="L253">        }</span>
+
+<span class="fc" id="L255">}</span>
+
+/**
+ *  Returns the name of the map text file.
+ * 
+ *  @return Map file name.
+ */
+
+// Getter method.
+public String getMapFile () {
+<span class="fc" id="L265">        return mapfile;</span>
+}
+
+/**
+ *  Returns the number of lives that waka has.
+ * 
+ *  @return Number of lives.
+ */
+
+// Getter method.
+public long getLives () {
+<span class="fc" id="L276">        return lives;</span>
+}
+
+/**
+ *  Returns the speed of waka, and ghost in pixels.
+ * 
+ *  @return Speed of waka, and ghost.
+ */
+
+// Getter method.
+public long getSpeed () {
+<span class="fc" id="L287">        return speed;</span>
+}
+
+/**
+ *  Returns the mode lengths for the ghost.
+ * 
+ *  @return Mode lengths of ghost.
+ */
+
+// Getter method.
+public ArrayList&lt;Long&gt; getModeLength () {
+<span class="fc" id="L298">        return modeLength;</span>
+}
+
+/**
+ *  Returns the length of frightened mode for the ghost.
+ * 
+ *  @return Frightened mode length.
+ */
+
+// Getter method.
+public long getFrightenedLength () {
+<span class="fc" id="L309">        return frightenedLength;</span>
+}
+
+/**
+ *  Returns the array list of the x-axis position, followed by y-axis position of 
+ *  fruits on map.
+ * 
+ *  @return Positions of fruits.
+ */
+
+// Getter method.
+public ArrayList&lt;Integer&gt; getFruits () {
+<span class="fc" id="L321">        return fruits;</span>
+}
+
+/**
+ *  Returns the array list of the x-axis position, followed by y-axis position of 
+ *  super fruits on map.
+ * 
+ *  @return Positions of super fruits.
+ */
+
+// Getter method.
+public ArrayList&lt;Integer&gt; getSuperFruits () {
+<span class="fc" id="L333">        return superFruits;</span>
+}
+
+/**
+ *  Returns the x-axis position, followed by y-axis position of ambusher ghosts 
+ *  in the form of a list.
+ * 
+ *  @return Position of ambusher ghosts.
+ */
+
+// Getter method.
+public ArrayList&lt;Long&gt; getGhostsAmbusher () {
+<span class="fc" id="L345">        return ghostsAmbusher;</span>
+}
+
+/**
+ *  Returns the x-axis position, followed by y-axis position of chaser ghosts 
+ *  in the form of a list.
+ * 
+ *  @return Position of chaser ghosts.
+ */
+
+// Getter method.
+public ArrayList&lt;Long&gt; getGhostsChaser () {
+<span class="fc" id="L357">        return ghostsChaser;</span>
+}
+
+/**
+ *  Returns the x-axis position, followed by y-axis position of ignorant ghosts 
+ *  in the form of a list.
+ * 
+ *  @return Position of ignorant ghosts.
+ */
+
+// Getter method.
+public ArrayList&lt;Long&gt; getGhostsIgnorant () {
+<span class="fc" id="L369">        return ghostsIgnorant;</span>
+}
+
+/**
+ *  Returns the x-axis position, followed by y-axis position of whim ghosts 
+ *  in the form of a list.
+ * 
+ *  @return Position of whim ghosts.
+ */
+
+// Getter method.
+public ArrayList&lt;Long&gt; getGhostsWhim () {
+<span class="fc" id="L381">        return ghostsWhim;</span>
+}
+
+/**
+ *  Returns the current x-axis position of waka.
+ * 
+ *  @return x-axis position of waka.
+ */
+
+// Getter method.
+public long getWakaStartX () {
+<span class="fc" id="L392">    return wakaStartX;</span>
+}
+
+/**
+*  Returns the current y-axis position of waka.
+*
+*  @return y-axis position of waka.
+*/
+
+// Getter method.
+public long getWakaStartY () {
+<span class="fc" id="L403">    return wakaStartY;</span>
+}
+
+/**
+*  Returns the time it takes for the ghost to complete one round of mode lengths.
+*
+*  @return Duration of one mode length round.
+*/
+
+// Getter method.
+public long getDuration () {
+<span class="fc" id="L414">    return duration;</span>
+}
+
+/**
+*  Returns the array list of the x-axis position, followed by y-axis position of 
+*  down left grid blocks.   
+*
+*  @return Positions of down left grid space.
+*/
+
+// Getter method.
+public ArrayList&lt;Integer&gt; getDownL () {
+<span class="fc" id="L426">    return downL;</span>
+}
+
+/**
+*  Returns the array list of the x-axis position, followed by y-axis position of 
+*  up left grid blocks.
+* 
+*  @return Positions of up left grid space.
+*/
+
+// Getter method.
+public ArrayList&lt;Integer&gt; getUpL () {
+<span class="fc" id="L438">    return upL;</span>
+}
+
+/**
+*  Returns the array list of the x-axis position, followed by y-axis position of
+*  down right grid blocks.
+*
+*  @return Positions of down right grid space.
+*/
+
+// Getter method.
+public ArrayList&lt;Integer&gt; getDownR () {
+<span class="fc" id="L450">    return downR;</span>
+}
+
+/**
+*  Returns the array list of the x-axis position, followed by y-axis position of 
+*  up right grid blocks.
+*
+*  @return Positions of up right grid space.
+*/
+
+// Getter method.
+public ArrayList&lt;Integer&gt; getUpR () {
+<span class="fc" id="L462">    return upR;</span>
+}
+
+/**
+*  Returns the array list of the x-axis position, followed by y-axis position of 
+*  horizontal grid blocks.
+*
+*  @return Positions of horizontal grid space.
+*/
+
+// Getter method.
+public ArrayList&lt;Integer&gt; getHor () {
+<span class="fc" id="L474">    return hor;</span>
+}
+
+/**
+*  Returns the array list of the x-axis position, followed by y-axis position of 
+*  vertical grid blocks.
+*
+*  @return Positions of vertical grid space.
+*/
+
+// Getter method.
+public ArrayList&lt;Integer&gt; getVer () {
+<span class="fc" id="L486">    return ver;</span>
+}
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

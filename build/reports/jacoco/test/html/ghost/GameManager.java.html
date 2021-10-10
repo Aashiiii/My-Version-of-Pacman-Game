@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">waka</a> &gt; <a href="index.source.html" class="el_package">ghost</a> &gt; <span class="el_source">GameManager.java</span></div><h1>GameManager.java</h1><pre class="source lang-java linenums">package ghost;
+
+import processing.core.PApplet;
+import processing.core.PImage;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import java.io.*;
+import java.text.ParseException;
+import java.util.*;
+
+/**
+ *  Manages different components of the game.
+ */
+
+public class GameManager {
+
+// Variable of type Waka.
+private Waka waka;
+
+// Variable of type Ghost.
+private Ghost ghost;
+
+// Variable of type Fruit.
+private Fruit fruit;
+
+// Variable to store the current time.
+private long timeNow;
+
+// Variable to store the length of the frightened ghost mode.
+private long frightenedLength;
+
+
+/**
+ *  Constructs a new GameManager object.
+ * 
+ * @param waka Object type of Waka.
+ * @param ghost Object of type Ghost.
+ * @param fruit Object of type Fruit.
+ */
+
+// Constructor
+<span class="fc" id="L42">public GameManager (Waka waka, Ghost ghost, Fruit fruit) {</span>
+<span class="fc" id="L43">        this.waka = waka;</span>
+<span class="fc" id="L44">        this.ghost = ghost;</span>
+<span class="fc" id="L45">        this.fruit = fruit;</span>
+<span class="fc" id="L46">        frightenedLength = 0;</span>
+<span class="fc" id="L47">} </span>
+
+
+
+/**
+ *  Returns the length of frightened mode for the ghost.
+ *  @return Frightened mode length.
+ */
+
+// Getter method.
+public long getFrightenedLength () {
+<span class="fc" id="L58">        return frightenedLength;</span>
+}
+
+
+
+/**
+ *  It returns an array list of coordinates. 
+ *  The first element refers to the current x-axis position of ghost, 
+ *  second refers to the current y-axis position of the ghost, the third
+ *  element refers to the target x-axis position of ghost, and 
+ *  fourth element represents the target y-axis position of ghost. 
+ * 
+ *  The type of ghost is determined with the help of the parameter. 
+ *  The integer value 0 refers to the ambusher ghost, 
+ *  1 refers to the ignorant ghost, 2 refers to the chaser ghost, and 
+ *  3 refers to the whim ghost.
+ * 
+ * 
+ *  @param k Number corresponding to the ghost type.
+ * 
+ *  @return Coordinates of ghost, and its target positions.
+ */
+
+// This method returns an array list which stores the x-axis, and y-axix position of 
+// the ghost, and its targets.
+public ArrayList &lt;Long&gt; getCoordinatesForDebug (int k) {
+
+<span class="fc" id="L85">        ArrayList &lt;Long&gt; coordinates = new ArrayList&lt;Long&gt; ();</span>
+
+<span class="fc bfc" id="L87" title="All 4 branches covered.">        if (k == 0 &amp;&amp; ghost.isAmbusherAlive () == true) { //ambusher</span>
+                
+<span class="fc bfc" id="L89" title="All 2 branches covered.">                if(ghost.getTargetsAmbusher ().size () != 0) {</span>
+
+                        // Adding the x-axis position of the ghost.
+<span class="fc" id="L92">                        coordinates.add (ghost.getTargetsAmbusher ().get (0) + 14);</span>
+
+                        // Adding the y-axis position of the ghost.
+<span class="fc" id="L95">                        coordinates.add (ghost.getTargetsAmbusher ().get (1) + 14);</span>
+
+                        // Adding the x-axis position of the ghost's target.
+<span class="fc" id="L98">                        coordinates.add (ghost.getTargetxAmbusher () + 12);</span>
+
+                        // Adding the y-axis position of the ghost's target.
+<span class="fc" id="L101">                        coordinates.add (ghost.getTargetyAmbusher () + 12);</span>
+
+                }
+        }
+
+<span class="fc bfc" id="L106" title="All 4 branches covered.">        if (k == 1 &amp;&amp; ghost.isIgnorantAlive () == true) { //ignorant</span>
+
+<span class="fc bfc" id="L108" title="All 2 branches covered.">                if(ghost.getTargetsIgnorant ().size () != 0) {</span>
+
+                        // Adding the x-axis position of the ghost.
+<span class="fc" id="L111">                        coordinates.add (ghost.getTargetsIgnorant ().get (0) + 14);</span>
+
+                        // Adding the y-axis position of the ghost.
+<span class="fc" id="L114">                        coordinates.add (ghost.getTargetsIgnorant ().get (1) + 14);</span>
+
+                        // Adding the x-axis position of the ghost's target.
+<span class="fc" id="L117">                        coordinates.add (ghost.getTargetxIgnorant () + 12);</span>
+
+                        // Adding the y-axis position of the ghost's target.
+<span class="fc" id="L120">                        coordinates.add (ghost.getTargetyIgnorant () + 12);</span>
+
+                }
+        }
+
+<span class="fc bfc" id="L125" title="All 4 branches covered.">        if (k == 2 &amp;&amp; ghost.isChaserAlive () == true) { //chaser</span>
+
+<span class="fc bfc" id="L127" title="All 2 branches covered.">                if(ghost.getTargetsChaser ().size () != 0) {</span>
+
+                        // Adding the x-axis position of the ghost.
+<span class="fc" id="L130">                        coordinates.add (ghost.getTargetsChaser ().get (0) + 14);</span>
+
+                        // Adding the y-axis position of the ghost.
+<span class="fc" id="L133">                        coordinates.add (ghost.getTargetsChaser ().get (1) + 14);</span>
+
+                        // Adding the x-axis position of the ghost's target.
+<span class="fc" id="L136">                        coordinates.add (ghost.getTargetxChaser () + 12);</span>
+
+                        // Adding the y-axis position of the ghost's target.
+<span class="fc" id="L139">                        coordinates.add (ghost.getTargetyChaser ()  + 12);</span>
+
+                }
+        }
+
+<span class="fc bfc" id="L144" title="All 4 branches covered.">        if (k == 3 &amp;&amp; ghost.isWhimAlive () == true) { //whim</span>
+
+<span class="fc bfc" id="L146" title="All 2 branches covered.">                if(ghost.getTargetsWhim ().size () != 0) {</span>
+
+                        // Adding the x-axis position of the ghost.
+<span class="fc" id="L149">                        coordinates.add (ghost.getTargetsWhim ().get (0) + 14);</span>
+
+                        // Adding the y-axis position of the ghost.
+<span class="fc" id="L152">                        coordinates.add (ghost.getTargetsWhim ().get (1) + 14);</span>
+
+                        // Adding the x-axis position of the ghost's target.
+<span class="fc" id="L155">                        coordinates.add (ghost.getTargetxWhim () + 12);</span>
+
+                        // Adding the y-axis position of the ghost's target.
+<span class="fc" id="L158">                        coordinates.add (ghost.getTargetyWhim () + 12);</span>
+
+                }
+        }
+
+<span class="fc" id="L163">        return coordinates;</span>
+}
+
+
+
+
+/**
+*  It is called sixty (frame rate) times per second. 
+*  It performs all the necessary calculations for GameManager objects.
+*  It finds the frightened mode start time, adds it to the list of frightened time, 
+*  and from the current time it decides whether the ghost is in frightened mode or not.
+*/
+
+public void tick () {
+        
+        // Stores the current time in a variable.
+<span class="fc" id="L179">        timeNow = System.currentTimeMillis() / 1000;</span>
+
+        // Stores the length of ghost frightened mode.
+<span class="fc" id="L182">        frightenedLength = ghost.getFrightenedLength ();</span>
+
+        // Stores the time at which the frightened mode started.
+<span class="fc" id="L185">        long frightenedStartTime = fruit.getFrightenedStartTime ();</span>
+        
+        // If the start time is zero, then that means no super fruit has been eaten yet.
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        if (frightenedStartTime != 0) {</span>
+<span class="fc" id="L189">                ghost.addFrightTime (frightenedStartTime);</span>
+        }
+        
+        // If the current time is less than the time when the frightened mode is 
+        // supposed to end that is frightened start time + frightened mode length, 
+        // then set the ghost to be in frightened mode.
+<span class="fc bfc" id="L195" title="All 2 branches covered.">        if (timeNow &lt;= frightenedStartTime + frightenedLength) {</span>
+<span class="fc" id="L196">                ghost.setFrightened (true);</span>
+        } else {
+
+                // If the condition is false, then the ghost is no more in frightened mode.
+<span class="fc" id="L200">                ghost.setFrightened (false);</span>
+        }
+
+<span class="fc" id="L203">}</span>
+
+
+
+/**
+*  It is called sixty (frame rate) times per second. 
+*  @param app PApplet app object.
+*/
+
+// Draw method.
+public void draw (PApplet app) {
+<span class="fc" id="L214">}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

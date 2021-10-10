@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ghost.ConfigTest" tests="21" skipped="0" failures="0" errors="0" timestamp="2020-11-22T12:13:06" hostname="Aashikas-MBP" time="0.034">
+  <properties/>
+  <testcase name="durationOfModeLength()" classname="ghost.ConfigTest" time="0.0"/>
+  <testcase name="downRightPositions()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="upLeftPositions()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="modeLengths()" classname="ghost.ConfigTest" time="0.0"/>
+  <testcase name="constructor()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="mapFileUsed()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="verticalPositions()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="numberOfLives()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="fruits()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="upRightPositions()" classname="ghost.ConfigTest" time="0.002"/>
+  <testcase name="downLeftPositions()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="ghostsAmbusher()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="wakastartXPosition()" classname="ghost.ConfigTest" time="0.0"/>
+  <testcase name="ghostsIgnorant()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="speed()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="ghostsWhim()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="horizontalPositions()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="frightenedLength()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="ghostsChaser()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="superFruits()" classname="ghost.ConfigTest" time="0.001"/>
+  <testcase name="wakastartYPosition()" classname="ghost.ConfigTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

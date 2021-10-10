@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">waka</a> &gt; <a href="index.source.html" class="el_package">ghost</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package ghost;
+import processing.core.PApplet;
+import processing.core.PImage;
+import processing.core.PFont;
+import java.lang.System.*;
+import java.util.*;
+
+/**
+ *  Manages, and draws the whole game on screen.
+ */
+
+public class App extends PApplet {
+
+/**
+*  Sets the width size of the screen.
+*/ 
+
+public static final int WIDTH = 448;
+
+/**
+*  Sets the hieght size of the screen.
+*/ 
+
+public static final int HEIGHT = 576;
+
+/**
+*  Map object.
+*/ 
+
+// Variable of type Map.
+public Map map;
+
+/**
+*  Waka object.
+*/ 
+
+// Variable of type Waka.
+public Waka waka;
+
+/**
+*  Fruit object.
+*/ 
+
+// Variable of type Fruit.
+public Fruit fruits;
+
+/**
+*  Ghost object.
+*/ 
+
+// Variable of type Ghost.
+public Ghost ghost;
+
+/**
+*  GameManager object.
+*/ 
+
+// Variable of type GameManager.
+public GameManager gameManager;
+
+/**
+*  Config object.
+*/ 
+
+// Variale of type Config.
+public Config config;
+
+/**
+*  Variable telling the time at which the game started.
+*/ 
+
+
+// Variable  to store the time at which game was started.
+public long time; 
+
+// Variable of type PFont.
+private PFont font;
+
+// Counter to store the number of times draw has been called when game is over, or 
+// player has won.
+private int counter; 
+
+/**
+*  Variable to store the number of times debug is called to decide when to activate, and deactivate it.
+*/ 
+
+// Counter keeping a track of whether we need to activate debug mode, or deactivate.
+public int debug; 
+
+// Variable to store the list of keycode of all the keys pressed.
+private ArrayList&lt;Integer&gt; keyCodesList; 
+
+/**
+*  Constructs a new App object.
+*/ 
+
+// Constructor.
+<span class="fc" id="L98">public App() {</span>
+
+<span class="fc" id="L100">}</span>
+
+
+/**
+*  It creates all the game objects, sets up the frame rate, and loads all the images.
+*/ 
+
+public void setup() {
+
+        // Set frame rate to 60 frames per second.
+<span class="fc" id="L110">        frameRate (60); </span>
+
+        // Counter to store number of frames when game is won, or game ends
+<span class="fc" id="L113">        counter = 0; </span>
+
+        // To keep a count of when debug mode has been activated, and when deactivated.
+<span class="fc" id="L116">        debug = 0; </span>
+
+        // Stores the list of keycode of the keys pressed by the player.
+<span class="fc" id="L119">        this.keyCodesList = new ArrayList&lt;Integer&gt; (); </span>
+
+        // Stores the current time.
+<span class="fc" id="L122">        this.time = System.currentTimeMillis() / 1000;</span>
+
+        //Loading images, and creating objects.
+<span class="fc" id="L125">        this.config = new Config(&quot;config.json&quot;); </span>
+
+        //Loading images, and creating objects.
+
+<span class="fc" id="L129">        this.map = new Map (this.loadImage(&quot;src/main/resources/downLeft.png&quot;), </span>
+<span class="fc" id="L130">                                this.loadImage(&quot;src/main/resources/downRight.png&quot;), </span>
+<span class="fc" id="L131">                                this.loadImage(&quot;src/main/resources/upLeft.png&quot;), </span>
+<span class="fc" id="L132">                                this.loadImage(&quot;src/main/resources/upRight.png&quot;), </span>
+<span class="fc" id="L133">                                this.loadImage(&quot;src/main/resources/horizontal.png&quot;), </span>
+<span class="fc" id="L134">                                this.loadImage(&quot;src/main/resources/vertical.png&quot;), </span>
+                            this.config); 
+
+<span class="fc" id="L137">        this.fruits = new Fruit (this.loadImage(&quot;src/main/resources/fruit.png&quot;), </span>
+<span class="fc" id="L138">                                        this.loadImage(&quot;src/main/resources/SuperFruit.png&quot;), </span>
+                                this.config); 
+
+<span class="fc" id="L141">        this.waka = new Waka (this.loadImage(&quot;src/main/resources/playerClosed.png&quot;), </span>
+<span class="fc" id="L142">                                        this.loadImage(&quot;src/main/resources/playerDown.png&quot;), </span>
+<span class="fc" id="L143">                                        this.loadImage(&quot;src/main/resources/playerLeft.png&quot;), </span>
+<span class="fc" id="L144">                                        this.loadImage(&quot;src/main/resources/playerRight.png&quot;), </span>
+<span class="fc" id="L145">                                        this.loadImage(&quot;src/main/resources/playerUp.png&quot;),</span>
+                                this.fruits,this.config);
+
+<span class="fc" id="L148">        this.ghost = new Ghost (this.loadImage(&quot;src/main/resources/ambusher.png&quot;), </span>
+<span class="fc" id="L149">                                        this.loadImage(&quot;src/main/resources/ignorant.png&quot;),</span>
+<span class="fc" id="L150">                                        this.loadImage(&quot;src/main/resources/chaser.png&quot;),</span>
+<span class="fc" id="L151">                                        this.loadImage(&quot;src/main/resources/whim.png&quot;),</span>
+<span class="fc" id="L152">                                        this.waka, this.loadImage(&quot;src/main/resources/frightened.png&quot;), </span>
+                                this.config); 
+
+<span class="fc" id="L155">        this.gameManager = new GameManager(this.waka, this.ghost, this.fruits);</span>
+
+<span class="fc" id="L157">}</span>
+
+/**
+*  It sets the size of the screen
+*/ 
+
+public void settings () {
+
+<span class="fc" id="L165">        size (WIDTH, HEIGHT);</span>
+
+<span class="fc" id="L167">}</span>
+
+
+/**
+*  It is called the frame rate number of times per second, and 
+*  it drwas all the game components on the screen by calling their draw function.
+*/ 
+
+public void draw () { 
+
+        // Checking if waka is alive, and the game has not been won yet.
+<span class="fc bfc" id="L178" title="All 4 branches covered.">        if (this.waka.isAlive () == true &amp;&amp; this.fruits.hasWon () == false) { </span>
+
+                //Moving the waka.
+<span class="fc" id="L181">                this.waka.move (keyCode, frameCount); </span>
+
+                // Moving the ghost.
+<span class="fc" id="L184">                this.ghost.move (time); </span>
+
+<span class="fc" id="L186">                this.map.tick ();</span>
+<span class="fc" id="L187">                this.fruits.tick ();</span>
+<span class="fc" id="L188">                this.ghost.tick ();</span>
+<span class="fc" id="L189">                this.waka.tick ();</span>
+<span class="fc" id="L190">                this.gameManager.tick ();</span>
+
+<span class="fc" id="L192">                background (0, 0, 0);</span>
+
+<span class="fc" id="L194">                this.map.draw (this);</span>
+<span class="fc" id="L195">                this.fruits.draw (this);</span>
+<span class="fc" id="L196">                this.ghost.draw (this);</span>
+<span class="fc" id="L197">                this.waka.draw (this);</span>
+<span class="fc" id="L198">                this.gameManager.draw (this);</span>
+
+                // Checking if space key is pressed.
+<span class="pc bpc" id="L201" title="1 of 2 branches missed.">                if (keyCode == 32) { </span>
+
+                        // Checking if the last pressed key was not space.
+<span class="nc bnc" id="L204" title="All 2 branches missed.">                        if (keyCodesList.get (keyCodesList.size () - 1) != 32) { </span>
+
+                                // In that case, we increase the counter by one.
+<span class="nc" id="L207">                                debug += 1; </span>
+
+                        }
+                }
+
+                // If debug is an odd number, then we need to activate debug mode, 
+                // else deactivate it.
+<span class="fc bfc" id="L214" title="All 2 branches covered.">                if (debug%2 != 0) { </span>
+
+<span class="fc bfc" id="L216" title="All 2 branches covered.">                        for (int k = 0; k &lt; 4; k++) {</span>
+
+<span class="fc" id="L218">                                ArrayList&lt;Long&gt; coordinates = new ArrayList&lt;Long&gt; ();</span>
+
+                                // Getting the coordinates of the ghost, and its targets.
+<span class="fc" id="L221">                                coordinates = this.gameManager.getCoordinatesForDebug (k); </span>
+
+<span class="pc bpc" id="L223" title="1 of 2 branches missed.">                                if (coordinates.size () != 0) {</span>
+
+                                        // Changing the colour of the line.
+<span class="fc" id="L226">                                        stroke (204); </span>
+
+                                        // Drawing the line joining the ghost to its 
+                                        // target position.
+<span class="fc" id="L230">                                        line (coordinates.get (0), coordinates.get (1), </span>
+<span class="fc" id="L231">                                                coordinates.get (2), </span>
+<span class="fc" id="L232">                                             coordinates.get (3)); </span>
+                                }   
+
+                        }
+
+                }
+
+<span class="fc" id="L239">                keyCodesList.add (keyCode); </span>
+
+<span class="fc bfc" id="L241" title="All 2 branches covered.">        } else if (this.waka.isAlive () == false) { </span>
+                // Checking if waka is not alive, in that case the game ends.
+
+<span class="fc" id="L244">                counter += 1;</span>
+<span class="fc" id="L245">                this.font = createFont (&quot;src/main/resources/PressStart2P-Regular&quot;, 32);</span>
+<span class="fc" id="L246">                textFont (font);</span>
+<span class="fc" id="L247">                background (0, 0, 0);</span>
+
+                // Displaying the game over text on screen.
+<span class="fc" id="L250">                text (&quot;GAME OVER&quot;, 130, 270); </span>
+
+                // If this condition is true, then it means that ten seconds have passed
+<span class="pc bpc" id="L253" title="1 of 2 branches missed.">                if (counter &gt; 600) { </span>
+
+                        // In that case reset the game conditions, and restart the game.
+<span class="nc" id="L256">                        keyCode = 0; </span>
+<span class="nc" id="L257">                        setup();</span>
+
+                }
+
+        } else { 
+
+                // The code reaches this block when the game has been won.
+<span class="fc" id="L264">                counter += 1;</span>
+<span class="fc" id="L265">                this.font = createFont (&quot;src/main/resources/PressStart2P-Regular&quot;, 32);</span>
+<span class="fc" id="L266">                textFont (font);</span>
+<span class="fc" id="L267">                background (0, 0, 0);</span>
+
+                // Displaying the game won text on screen.
+<span class="fc" id="L270">                text (&quot; YOU WIN &quot;, 130, 270); </span>
+
+                // If this condition is true, then it means that ten seconds have passed.
+<span class="pc bpc" id="L273" title="1 of 2 branches missed.">                if (counter &gt; 600) { </span>
+
+                        // In that case reset the game conditions, and restart the game.
+<span class="nc" id="L276">                        keyCode = 0; </span>
+<span class="nc" id="L277">                        setup();</span>
+                }
+
+        }
+<span class="fc" id="L281">}</span>
+
+/**
+*  Main method of app class.
+*/ 
+
+public static void main (String[] args) {
+
+<span class="nc" id="L289">        PApplet.main (&quot;ghost.App&quot;);</span>
+
+<span class="nc" id="L291"> }</span>
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
